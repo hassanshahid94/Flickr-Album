@@ -1,0 +1,44 @@
+PODS:
+  - Alamofire (4.7.3)
+  - AlamofireObjectMapper (5.2.1):
+    - Alamofire (~> 4.7)
+    - ObjectMapper (~> 3.4)
+  - DataCache (1.5)
+  - LoadingPlaceholderView (0.0.2)
+  - ObjectMapper (3.5.3)
+  - SDWebImage (5.11.0):
+    - SDWebImage/Core (= 5.11.0)
+  - SDWebImage/Core (5.11.0)
+  - SwiftyJSON (4.3.0)
+
+DEPENDENCIES:
+  - Alamofire (~> 4.7.3)
+  - AlamofireObjectMapper (~> 5.2)
+  - DataCache
+  - LoadingPlaceholderView
+  - ObjectMapper (~> 3.5)
+  - SDWebImage (~> 5.0)
+  - SwiftyJSON (~> 4.0)
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - AlamofireObjectMapper
+    - DataCache
+    - LoadingPlaceholderView
+    - ObjectMapper
+    - SDWebImage
+    - SwiftyJSON
+
+SPEC CHECKSUMS:
+  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
+  AlamofireObjectMapper: 1989f690e982b71921b9253f53a4f33a9bc00d88
+  DataCache: 8099e01aa35c2fd30f3410aae14ef5a130f6524b
+  LoadingPlaceholderView: e913f5ae2673612d405ce395acca7cedb1bfaa81
+  ObjectMapper: 97111c97e054a6ee25917662106689f0b4127b37
+  SDWebImage: 7acbb57630ac7db4a495547fb73916ff3e432f6b
+  SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
+
+PODFILE CHECKSUM: 51bf61af7797da1072d01d478f9615c768f7430f
+
+COCOAPODS: 1.10.1

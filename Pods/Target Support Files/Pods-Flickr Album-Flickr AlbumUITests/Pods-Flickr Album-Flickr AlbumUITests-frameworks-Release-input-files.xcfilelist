@@ -1,0 +1,8 @@
+${PODS_ROOT}/Target Support Files/Pods-Flickr Album-Flickr AlbumUITests/Pods-Flickr Album-Flickr AlbumUITests-frameworks.sh
+${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework
+${BUILT_PRODUCTS_DIR}/AlamofireObjectMapper/AlamofireObjectMapper.framework
+${BUILT_PRODUCTS_DIR}/DataCache/DataCache.framework
+${BUILT_PRODUCTS_DIR}/LoadingPlaceholderView/LoadingPlaceholderView.framework
+${BUILT_PRODUCTS_DIR}/ObjectMapper/ObjectMapper.framework
+${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework
+${BUILT_PRODUCTS_DIR}/SwiftyJSON/SwiftyJSON.framework
