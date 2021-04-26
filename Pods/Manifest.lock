@@ -9,6 +9,7 @@ PODS:
   - SDWebImage (5.11.0):
     - SDWebImage/Core (= 5.11.0)
   - SDWebImage/Core (5.11.0)
+  - SnapKit (5.0.1)
   - SwiftyJSON (4.3.0)
 
 DEPENDENCIES:
@@ -18,6 +19,7 @@ DEPENDENCIES:
   - LoadingPlaceholderView
   - ObjectMapper (~> 3.5)
   - SDWebImage (~> 5.0)
+  - SnapKit (~> 5.0.0)
   - SwiftyJSON (~> 4.0)
 
 SPEC REPOS:
@@ -28,6 +30,7 @@ SPEC REPOS:
     - LoadingPlaceholderView
     - ObjectMapper
     - SDWebImage
+    - SnapKit
     - SwiftyJSON
 
 SPEC CHECKSUMS:
@@ -37,8 +40,9 @@ SPEC CHECKSUMS:
   LoadingPlaceholderView: e913f5ae2673612d405ce395acca7cedb1bfaa81
   ObjectMapper: 97111c97e054a6ee25917662106689f0b4127b37
   SDWebImage: 7acbb57630ac7db4a495547fb73916ff3e432f6b
+  SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
 
-PODFILE CHECKSUM: 51bf61af7797da1072d01d478f9615c768f7430f
+PODFILE CHECKSUM: 3d138db03f046b0e527d31ee0d501b4093191251
 
 COCOAPODS: 1.10.1

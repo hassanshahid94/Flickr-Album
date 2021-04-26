@@ -44,6 +44,7 @@ class Flickr_AlbumTests: XCTestCase {
         params.format = "json"
         params.apiKey = Constants.apiKey
         params.nojsoncallback = 1
+        params.page = 1
         ServerManager.getAllPhotos(params: params) { (status, data) in
             XCTAssertEqual(expected.photos?.total, data?.photos?.total)
             expectatio.fulfill()

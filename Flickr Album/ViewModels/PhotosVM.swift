@@ -11,16 +11,14 @@ import UIKit
 class PhotosVM : NSObject {
     
     //MARK:- Variables
-    var photosVC = PhotosVC()
-     var albumData : FlickrAlbumPhotosResponse! {
+    var bindPhotosVMToController : (() -> ()) = {}
+    var albumData : FlickrAlbumPhotosResponse! {
         didSet {
             self.bindPhotosVMToController()
         }
     }
-
     
-    var bindPhotosVMToController : (() -> ()) = {}
-    
+    //MARK:- Load
     override init() {
         super.init()
         getPhotos()
@@ -46,18 +44,18 @@ class PhotosVM : NSObject {
         }
     }
     
-    public func getMorePhotos(completion: @escaping () -> Void) {
+    public func getMorePhotos(pageNumber: Int, completion: @escaping () -> Void) {
         
         let params = GetPhotosBody()
         params.format = "json"
         params.apiKey = Constants.apiKey
         params.nojsoncallback = 1
-        params.page = 2
+        params.page = pageNumber
         ServerManager.getAllPhotos(params: params) {(status, data) in
             if status == "success"
             {
+                self.albumData.photos?.page = pageNumber
                 self.albumData.photos?.photo?.append(contentsOf: (data!.photos!.photo!))
-               // self.photosVC.updateDataSource()
                 completion()
                 
             }

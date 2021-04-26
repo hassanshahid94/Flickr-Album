@@ -6,40 +6,62 @@
 //
 
 import UIKit
+import SnapKit
 
 class PhotosTCell: UITableViewCell {
 
-    //MARK:- Outlets
-    @IBOutlet weak var lblTitle: UILabel!
-    @IBOutlet weak var imgAlbum: UIImageView!
-    @IBOutlet weak var vwBackground: UIView!
+    //MARK:- Variables for Outlets/UI
+    var vwBackground: UIView!
+    var imgAlbum: UIImageView!
+    var lblTitle: UILabel!
     
-    var data : FlickrAlbumPhoto? {
-        didSet {
-            lblTitle.text = data?.id
+    //MARK:- Load
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+            super.init(style: style, reuseIdentifier: reuseIdentifier)
             
-            imgAlbum.sd_setImage(with: URL(string: "\(Constants.imgURL)\(data?.server ?? "")/\(String(describing: data?.id ?? ""))_\(data?.secret ?? "").jpg"), placeholderImage: UIImage(named: "placeholder"))
+        //adding background view to the contentview
+        vwBackground = UIView()
+        vwBackground.layer.cornerRadius = 10
+        vwBackground.dropShadow(scale: false)
+        contentView.addSubview(vwBackground)
+        vwBackground.snp.makeConstraints { (make) -> Void in
+            
+            make.top.equalTo(contentView.snp.top).inset(10)
+            make.leading.equalTo(contentView.snp.leading).inset(10)
+            make.trailing.equalTo(contentView.snp.trailing).inset(10)
+            make.bottom.equalTo(contentView.snp.bottom).inset(10)
+        }
+        
+        //Adding label to the background view
+        lblTitle = UILabel()
+        lblTitle.font = UIFont.FlickAlbum_description
+        lblTitle.textAlignment = .center
+        lblTitle.numberOfLines = 0
+        vwBackground.addSubview(lblTitle)
+        
+        lblTitle.snp.makeConstraints { (make) -> Void in
+            make.leading.equalTo(10)
+            make.trailing.equalTo(-10)
+            make.bottom.equalTo(vwBackground.snp.bottom).inset(10)
+        }
+        
+        //adding imageview to the background view
+        imgAlbum = UIImageView()
+        imgAlbum.layer.cornerRadius = 10
+        imgAlbum.contentMode = .scaleAspectFill
+        imgAlbum.clipsToBounds = true
+        vwBackground.addSubview(imgAlbum)
+        imgAlbum.image = UIImage(named: "flower")
+        imgAlbum.snp.makeConstraints { (make) -> Void in
+            make.height.equalTo(200)
+            make.top.equalTo(vwBackground.snp.top).inset(10)
+            make.leading.equalTo(vwBackground.snp.leading).inset(10)
+            make.trailing.equalTo(vwBackground.snp.trailing).inset(10)
+            make.bottom.equalTo(lblTitle.snp.top).inset(-10)
         }
     }
     
-    //MARK:- Load
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-        initViews()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-    
-    //MARK: Functions
-    func initViews() {
-        vwBackground.layer.cornerRadius = 10
-        vwBackground.dropShadow(scale: false)
-        imgAlbum.layer.cornerRadius = 10
-    }
-
 }

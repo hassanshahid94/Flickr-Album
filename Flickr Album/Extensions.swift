@@ -46,3 +46,16 @@ extension UIColor {
         )
     }
 }
+
+// MARK: - UIFont Extension
+extension UIFont {
+    static let FlickAlbum_description = UIFont(name: "Helvetica Neue", size: 14)
+    static let FlickAlbum_heading = UIFont(name: "Helvetica Neue Bold", size: 18.0)
+}
+
+extension String {
+
+    func compare(_ with : String)->Bool{
+        return self.caseInsensitiveCompare(with) == .orderedSame
+    }
+}
