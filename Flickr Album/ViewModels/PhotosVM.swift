@@ -10,6 +10,7 @@ import UIKit
 
 class PhotosVM : NSObject {
     
+    var alert = UIAlertController()
     //MARK:- Variables
     var bindPhotosVMToController : (() -> ()) = {}
     var albumData : FlickrAlbumPhotosResponse! {
@@ -35,10 +36,12 @@ class PhotosVM : NSObject {
         ServerManager.getAllPhotos(params: params) { (status, data) in
             if status == "success"
             {
+                self.alert.showAlert(message: "something went wrong.")
                 self.albumData = data
             }
             else
             {
+                self.alert.showAlert(message: "something went wrong.")
                 print ("something went wrong.")
             }
         }
@@ -51,7 +54,7 @@ class PhotosVM : NSObject {
         params.apiKey = Constants.apiKey
         params.nojsoncallback = 1
         params.page = pageNumber
-        ServerManager.getAllPhotos(params: params) {(status, data) in
+        ServerManager.getAllPhotos(params: params) { [self](status, data) in
             if status == "success"
             {
                 self.albumData.photos?.page = pageNumber
@@ -61,7 +64,7 @@ class PhotosVM : NSObject {
             }
             else
             {
-                print ("something went wrong.")
+                self.alert.showAlert(message: "something went wrong.")
                 completion()
             }
         }

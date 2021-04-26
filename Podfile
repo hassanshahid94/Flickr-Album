@@ -14,6 +14,7 @@ pod 'SwiftyJSON', '~> 4.0'
 pod 'LoadingPlaceholderView'
 pod 'DataCache'
 pod 'SnapKit', '~> 5.0.0'
+pod 'XLMediaZoom'
   target 'Flickr AlbumTests' do
     inherit! :search_paths
     # Pods for testing

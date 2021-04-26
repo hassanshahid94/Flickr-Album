@@ -9,9 +9,11 @@ import UIKit
 import SnapKit
 import SDWebImage
 import LoadingPlaceholderView
+import XLMediaZoom
 
 class PhotosVC: UIViewController {
 
+    
     //MARK:- Variables
     var isSearch = false
     var arrFliterResult = [FlickrAlbumPhoto]()
@@ -54,6 +56,7 @@ class PhotosVC: UIViewController {
         lblHeading.font = UIFont.FlickAlbum_heading
         self.view.addSubview(lblHeading)
         lblHeading.snp.makeConstraints { (make) -> Void in
+            
             make.width.equalTo(self.view.frame.width * 0.95)
             make.topMargin.equalTo(10)
             make.centerXWithinMargins.equalToSuperview()
@@ -138,7 +141,7 @@ extension PhotosVC: UITableViewDataSource{
             
             let picURL = "\(Constants.imgURL)\(arrFliterResult[indexPath.row].server ?? "")/\(String(describing: arrFliterResult[indexPath.row].id ?? ""))_\(arrFliterResult[indexPath.row].secret ?? "").jpg"
             cell.imgAlbum.sd_imageIndicator = SDWebImageActivityIndicator.large
-            cell.imgAlbum.sd_setImage(with: URL(string: picURL), placeholderImage: UIImage(named: "placeholder"))
+            cell.imgAlbum.sd_setImage(with: URL(string: picURL), placeholderImage: UIImage(named: "ic_placeholder"))
         }
         else{
             
@@ -146,7 +149,7 @@ extension PhotosVC: UITableViewDataSource{
             
             let picURL = "\(Constants.imgURL)\(photosVM.albumData.photos?.photo![indexPath.row].server ?? "")/\(String(describing: photosVM.albumData.photos?.photo![indexPath.row].id ?? ""))_\(photosVM.albumData.photos?.photo![indexPath.row].secret ?? "").jpg"
             cell.imgAlbum.sd_imageIndicator = SDWebImageActivityIndicator.large
-            cell.imgAlbum.sd_setImage(with: URL(string: picURL), placeholderImage: UIImage(named: "placeholder"))
+            cell.imgAlbum.sd_setImage(with: URL(string: picURL), placeholderImage: UIImage(named: "ic_placeholder"))
         }
         self.finishFakeRequest()
         return cell
@@ -158,11 +161,29 @@ extension PhotosVC: UITableViewDelegate{
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        print (indexPath.row)
+        //Initialize both your image and the mediaZoom view associated.
+        var picURL = ""
+        let imgAlbum = UIImageView(frame: CGRect(x: 0, y: 0, width: view.layer.frame.width, height: view.layer.frame.height))
+        imgAlbum.contentMode = .scaleAspectFit
+        
+        if isSearch
+        {
+            picURL = "\(Constants.imgURL)\(arrFliterResult[indexPath.row].server ?? "")/\(String(describing: arrFliterResult[indexPath.row].id ?? ""))_\(arrFliterResult[indexPath.row].secret ?? "").jpg"
+            imgAlbum.sd_imageIndicator = SDWebImageActivityIndicator.large
+            imgAlbum.sd_setImage(with: URL(string: picURL), placeholderImage: UIImage(named: "ic_placeholder"))
+        }
+        else
+        {
+            picURL = "\(Constants.imgURL)\(photosVM.albumData.photos?.photo![indexPath.row].server ?? "")/\(String(describing: photosVM.albumData.photos?.photo![indexPath.row].id ?? ""))_\(photosVM.albumData.photos?.photo![indexPath.row].secret ?? "").jpg"
+            imgAlbum.sd_imageIndicator = SDWebImageActivityIndicator.large
+            imgAlbum.sd_setImage(with: URL(string: picURL), placeholderImage: UIImage(named: "ic_placeholder"))
+        }
+        let mediaZoom = XLMediaZoom(animationTime: 0.3, image: imgAlbum, blurEffect: false)
+        //Add the mediaZoom view to your superView and show it.
+        view.addSubview(mediaZoom!)
+        mediaZoom!.show()
     }
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-       cell.backgroundColor = UIColor.clear
-       
         if indexPath.row == photosVM.albumData.photos!.photo!.count - 1
        {
             if self.photosVM.albumData.photos!.pages! > self.photosVM.albumData.photos!.page!
@@ -193,10 +214,13 @@ extension PhotosVC: UISearchBarDelegate{
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
         isSearch = searchText == "" ? false : true
-        print("searchText \(searchText)")
         arrFliterResult.removeAll()
         for (index, element) in photosVM.albumData.photos!.photo!.enumerated() {
-            if (element.title?.contains(searchText)) != false
+            
+            let txtSearch = searchText.lowercased()
+            let txtContain = element.title?.lowercased()
+            
+            if (txtContain?.contains(txtSearch)) != false
             {
                 arrFliterResult.append(photosVM.albumData.photos!.photo![index])
             }

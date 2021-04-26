@@ -11,6 +11,7 @@ PODS:
   - SDWebImage/Core (5.11.0)
   - SnapKit (5.0.1)
   - SwiftyJSON (4.3.0)
+  - XLMediaZoom (2.0.1)
 
 DEPENDENCIES:
   - Alamofire (~> 4.7.3)
@@ -21,6 +22,7 @@ DEPENDENCIES:
   - SDWebImage (~> 5.0)
   - SnapKit (~> 5.0.0)
   - SwiftyJSON (~> 4.0)
+  - XLMediaZoom
 
 SPEC REPOS:
   trunk:
@@ -32,6 +34,7 @@ SPEC REPOS:
     - SDWebImage
     - SnapKit
     - SwiftyJSON
+    - XLMediaZoom
 
 SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
@@ -42,7 +45,8 @@ SPEC CHECKSUMS:
   SDWebImage: 7acbb57630ac7db4a495547fb73916ff3e432f6b
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
+  XLMediaZoom: 52f8f473066d0a3e09572fbee6c84f25c1ed0bca
 
-PODFILE CHECKSUM: 3d138db03f046b0e527d31ee0d501b4093191251
+PODFILE CHECKSUM: 5d0c4fcd57d8734917435bdefed73d4c05c2e01a
 
 COCOAPODS: 1.10.1

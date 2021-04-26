@@ -51,7 +51,6 @@ class PhotosTCell: UITableViewCell {
         imgAlbum.contentMode = .scaleAspectFill
         imgAlbum.clipsToBounds = true
         vwBackground.addSubview(imgAlbum)
-        imgAlbum.image = UIImage(named: "flower")
         imgAlbum.snp.makeConstraints { (make) -> Void in
             make.height.equalTo(200)
             make.top.equalTo(vwBackground.snp.top).inset(10)
