@@ -53,15 +53,7 @@ extension UIFont {
     static let FlickAlbum_heading = UIFont(name: "Helvetica Neue Bold", size: 18.0)
 }
 
-extension String {
-
-    func compare(_ with : String)->Bool{
-        return self.caseInsensitiveCompare(with) == .orderedSame
-    }
-}
-
-extension UIAlertController{
-    
+extension UIViewController {
     func showAlert(message: String)
     {
         let alert = UIAlertController(title: "Flickr Album", message: message, preferredStyle: UIAlertController.Style.alert)

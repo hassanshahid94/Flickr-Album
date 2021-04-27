@@ -12,7 +12,6 @@ import LoadingPlaceholderView
 import XLMediaZoom
 
 class PhotosVC: UIViewController {
-
     
     //MARK:- Variables
     var isSearch = false
@@ -20,6 +19,7 @@ class PhotosVC: UIViewController {
     var spinner = UIActivityIndicatorView()
     var photosVM : PhotosVM!
     var loadingPlaceholderView = LoadingPlaceholderView()
+    var refreshControl = UIRefreshControl()
     var cellsIdentifiers = [
         "PhotosTCell",
         "PhotosTCell",
@@ -39,12 +39,12 @@ class PhotosVC: UIViewController {
     //MARK:- Load
     override func viewDidLoad() {
         super.viewDidLoad()
-        photosVM =  PhotosVM()
-        configureUI()
         callToViewModelForUIUpdate()
+        configureUI()
+        
+        
+        
     }
-    
-
     //MARK:- Functions
     func configureUI() {
         
@@ -92,14 +92,36 @@ class PhotosVC: UIViewController {
             make.bottom.equalTo(view.snp.bottom).inset(10)
             make.centerXWithinMargins.equalToSuperview()
         }
-    }
-    
-    func callToViewModelForUIUpdate(){
+        
+       // pull to refresh tableview
+        refreshControl = UIRefreshControl()
+        refreshControl.attributedTitle = NSAttributedString(string: "")
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        tblPhotos.addSubview(refreshControl)
         
         setupLoadingPlaceholderView()
         performFakeNetworkRequest()
+        loadPhotos()
+        
+    }
+    
+    func loadPhotos()
+    {
+        photosVM.getPhotos { (status) in
+            if status == "success"
+            {
+                self.callToViewModelForUIUpdate()
+            }
+            else{
+                self.showAlert(message: status)
+            }
+            self.finishFakeRequest()
+        }
+    }
+    func callToViewModelForUIUpdate(){
+        photosVM =  PhotosVM()
         photosVM.bindPhotosVMToController = {
-            self.tblPhotos.reloadData()
+             self.tblPhotos.reloadData()
         }
     }
     func performFakeNetworkRequest() {
@@ -107,6 +129,7 @@ class PhotosVC: UIViewController {
     }
 
     func finishFakeRequest() {
+        refreshControl.endRefreshing()
         loadingPlaceholderView.uncover()
     }
 
@@ -114,6 +137,10 @@ class PhotosVC: UIViewController {
         
         loadingPlaceholderView.gradientColor = .white
         loadingPlaceholderView.backgroundColor = .white
+    }
+    
+    @objc func refresh(_ sender: Any) {
+        loadPhotos()
     }
 }
 
@@ -134,7 +161,7 @@ extension PhotosVC: UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "PhotosTCell", for: indexPath) as! PhotosTCell
-        
+        cell.selectionStyle = .none
         if isSearch{
             
             cell.lblTitle.text = arrFliterResult[indexPath.row].title == "" ? "N/A" : arrFliterResult[indexPath.row].title
@@ -151,7 +178,7 @@ extension PhotosVC: UITableViewDataSource{
             cell.imgAlbum.sd_imageIndicator = SDWebImageActivityIndicator.large
             cell.imgAlbum.sd_setImage(with: URL(string: picURL), placeholderImage: UIImage(named: "ic_placeholder"))
         }
-        self.finishFakeRequest()
+        
         return cell
     }
 }
@@ -195,14 +222,22 @@ extension PhotosVC: UITableViewDelegate{
                 tblPhotos.tableFooterView?.isHidden = false
                 
                 // Little delay to show activity indicator
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.0) {
                  
-                 self.photosVM.getMorePhotos(pageNumber: (self.photosVM.albumData.photos!.page! + 1)) {
-                     self.spinner.stopAnimating()
-                     self.tblPhotos.tableFooterView = nil
-                     self.tblPhotos.tableFooterView?.isHidden = true
-                     self.tblPhotos.reloadData()
-                 }
+                    self.photosVM.getMorePhotos(pageNumber: self.photosVM.albumData.photos!.page! + 1) { (status) in
+                        
+                        if status == "success"
+                        {
+                            self.tblPhotos.reloadData()
+                        }
+                        else
+                        {
+                            self.showAlert(message: status)
+                        }
+                        self.spinner.stopAnimating()
+                        self.tblPhotos.tableFooterView = nil
+                        self.tblPhotos.tableFooterView?.isHidden = true
+                    }
                 }
             }
        }
@@ -215,14 +250,15 @@ extension PhotosVC: UISearchBarDelegate{
         
         isSearch = searchText == "" ? false : true
         arrFliterResult.removeAll()
-        for (index, element) in photosVM.albumData.photos!.photo!.enumerated() {
-            
-            let txtSearch = searchText.lowercased()
-            let txtContain = element.title?.lowercased()
-            
-            if (txtContain?.contains(txtSearch)) != false
-            {
-                arrFliterResult.append(photosVM.albumData.photos!.photo![index])
+        if photosVM.albumData != nil{
+            for (index, element) in photosVM.albumData.photos!.photo!.enumerated() {
+                let txtSearch = searchText.lowercased()
+                let txtContain = element.title?.lowercased()
+                
+                if (txtContain?.contains(txtSearch)) != false
+                {
+                    arrFliterResult.append(photosVM.albumData.photos!.photo![index])
+                }
             }
         }
         tblPhotos.reloadData()

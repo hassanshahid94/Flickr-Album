@@ -7,10 +7,12 @@
 
 import Foundation
 import UIKit
+import DataCache
+import SwiftyJSON
+import ObjectMapper
 
-class PhotosVM : NSObject {
+class PhotosVM : NSObject  {
     
-    var alert = UIAlertController()
     //MARK:- Variables
     var bindPhotosVMToController : (() -> ()) = {}
     var albumData : FlickrAlbumPhotosResponse! {
@@ -22,11 +24,18 @@ class PhotosVM : NSObject {
     //MARK:- Load
     override init() {
         super.init()
-        getPhotos()
+        loadDefaults()
     }
     
     //MARK:- Functions
-    func getPhotos() {
+    func loadDefaults()
+    {
+        if let photos = DataCache.instance.readObject(forKey: CacheValue.photos)
+        {
+             albumData = Mapper<FlickrAlbumPhotosResponse>().map(JSONObject: photos)
+        }
+    }
+    func getPhotos(completion: @escaping (String) -> Void) {
         
         let params = GetPhotosBody()
         params.format = "json"
@@ -36,18 +45,15 @@ class PhotosVM : NSObject {
         ServerManager.getAllPhotos(params: params) { (status, data) in
             if status == "success"
             {
-                self.alert.showAlert(message: "something went wrong.")
                 self.albumData = data
+                //Cache Data
+                DataCache.instance.write(object: self.albumData.toJSON() as NSCoding, forKey: CacheValue.photos)
             }
-            else
-            {
-                self.alert.showAlert(message: "something went wrong.")
-                print ("something went wrong.")
-            }
+            completion(status)
         }
     }
     
-    public func getMorePhotos(pageNumber: Int, completion: @escaping () -> Void) {
+    public func getMorePhotos(pageNumber: Int, completion: @escaping (String) -> Void) {
         
         let params = GetPhotosBody()
         params.format = "json"
@@ -59,14 +65,11 @@ class PhotosVM : NSObject {
             {
                 self.albumData.photos?.page = pageNumber
                 self.albumData.photos?.photo?.append(contentsOf: (data!.photos!.photo!))
-                completion()
                 
+                //Cache Data
+                DataCache.instance.write(object: self.albumData.toJSON() as NSCoding, forKey: CacheValue.photos)
             }
-            else
-            {
-                self.alert.showAlert(message: "something went wrong.")
-                completion()
-            }
+            completion(status)
         }
     }
 }
