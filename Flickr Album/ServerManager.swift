@@ -27,8 +27,28 @@ class ServerManager {
                 case .success:
                     let data = response.result.value
                     completion("success",data)
+                case .failure(let error):
+                    completion(error.localizedDescription, nil)
+            }
+        }
+    }
+    
+    public static func getSearchPhotos(params: GetPhotosBody, completion: @escaping (String ,FlickrAlbumPhotosResponse?) -> Void)
+    {
+        let url = "\(Constants.baseURL)\(FlickrAlbumEndpoints.searchPhotos.rawValue)&format=\(String(describing: params.format!))&nojsoncallback=\(String(describing: params.nojsoncallback!))&api_key=\(String(describing: params.apiKey!))&page=\(String(describing: params.page!))&text=\(params.text!)&content_type=\(params.contentType!)"
+        
+        var request = URLRequest(url: URL(string: url)!)
+        request.httpMethod = HTTPMethod.get.rawValue
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        Alamofire.request(request).responseObject { (response: DataResponse<FlickrAlbumPhotosResponse>) in
+
+            switch response.result
+            {
+                case .success:
+                    let data = response.result.value
+                    completion("success",data)
             case .failure(let error):
-                print(error.localizedDescription)
                 completion(error.localizedDescription, nil)
             }
         }
@@ -37,6 +57,7 @@ class ServerManager {
 
 enum FlickrAlbumEndpoints: String
 {
-    //Rest API URL
+    //Rest API URL/endpoints
     case getPhotos               = "rest/?method=flickr.photos.getRecent"
+    case searchPhotos            = "rest/?method=flickr.photos.search"
 }

@@ -14,9 +14,9 @@ import XLMediaZoom
 class PhotosVC: UIViewController {
     
     //MARK:- Variables
+    var searchText = ""
     var isSearch = false
     var arrFliterResult = [FlickrAlbumPhoto]()
-    var spinner = UIActivityIndicatorView()
     var photosVM : PhotosVM!
     var loadingPlaceholderView = LoadingPlaceholderView()
     var refreshControl = UIRefreshControl()
@@ -42,8 +42,6 @@ class PhotosVC: UIViewController {
         callToViewModelForUIUpdate()
         configureUI()
         
-        
-        
     }
     //MARK:- Functions
     func configureUI() {
@@ -68,6 +66,7 @@ class PhotosVC: UIViewController {
         txtSearch.placeholder = "Search"
         txtSearch.searchTextField.font = UIFont.FlickAlbum_description
         txtSearch.delegate = self
+        txtSearch.showsScopeBar = true
         self.view.addSubview(txtSearch)
         txtSearch.snp.makeConstraints { (make) -> Void in
             make.height.equalTo(40)
@@ -107,20 +106,20 @@ class PhotosVC: UIViewController {
     
     func loadPhotos()
     {
-        photosVM.getPhotos { (status) in
+        photosVM.getPhotos { [self] (status) in
             if status == "success"
             {
-                self.callToViewModelForUIUpdate()
+                callToViewModelForUIUpdate()
             }
             else{
-                self.showAlert(message: status)
+                showAlert(message: status)
             }
-            self.finishFakeRequest()
+            finishFakeRequest()
         }
     }
     func callToViewModelForUIUpdate(){
         photosVM =  PhotosVM()
-        photosVM.bindPhotosVMToController = {
+        photosVM.bindPhotosVMToController =  {
              self.tblPhotos.reloadData()
         }
     }
@@ -148,13 +147,14 @@ class PhotosVC: UIViewController {
 extension PhotosVC: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
-        if isSearch
-        {
-            return arrFliterResult.count
-        }
-        else{
-            return photosVM.albumData == nil ? 0 : photosVM.albumData.photos!.photo!.count
-        }
+//        if isSearch
+//        {
+//            return arrFliterResult.count
+//        }
+//        else{
+//            return photosVM.albumData == nil ? 0 : photosVM.albumData.photos!.photo!.count
+//        }
+        return photosVM.albumData == nil ? 0 : photosVM.albumData.photos!.photo!.count
         
     }
     
@@ -162,22 +162,22 @@ extension PhotosVC: UITableViewDataSource{
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "PhotosTCell", for: indexPath) as! PhotosTCell
         cell.selectionStyle = .none
-        if isSearch{
-            
-            cell.lblTitle.text = arrFliterResult[indexPath.row].title == "" ? "N/A" : arrFliterResult[indexPath.row].title
-            
-            let picURL = "\(Constants.imgURL)\(arrFliterResult[indexPath.row].server ?? "")/\(String(describing: arrFliterResult[indexPath.row].id ?? ""))_\(arrFliterResult[indexPath.row].secret ?? "").jpg"
-            cell.imgAlbum.sd_imageIndicator = SDWebImageActivityIndicator.large
-            cell.imgAlbum.sd_setImage(with: URL(string: picURL), placeholderImage: UIImage(named: "ic_placeholder"))
-        }
-        else{
+//        if isSearch{
+//
+//            cell.lblTitle.text = arrFliterResult[indexPath.row].title == "" ? "N/A" : arrFliterResult[indexPath.row].title
+//
+//            let picURL = "\(Constants.imgURL)\(arrFliterResult[indexPath.row].server ?? "")/\(String(describing: arrFliterResult[indexPath.row].id ?? ""))_\(arrFliterResult[indexPath.row].secret ?? "").jpg"
+//            cell.imgAlbum.sd_imageIndicator = SDWebImageActivityIndicator.large
+//            cell.imgAlbum.sd_setImage(with: URL(string: picURL), placeholderImage: UIImage(named: "ic_placeholder"))
+//        }
+        //else{
             
             cell.lblTitle.text = photosVM.albumData.photos?.photo![indexPath.row].title == "" ? "N/A" : photosVM.albumData.photos?.photo![indexPath.row].title
             
             let picURL = "\(Constants.imgURL)\(photosVM.albumData.photos?.photo![indexPath.row].server ?? "")/\(String(describing: photosVM.albumData.photos?.photo![indexPath.row].id ?? ""))_\(photosVM.albumData.photos?.photo![indexPath.row].secret ?? "").jpg"
             cell.imgAlbum.sd_imageIndicator = SDWebImageActivityIndicator.large
             cell.imgAlbum.sd_setImage(with: URL(string: picURL), placeholderImage: UIImage(named: "ic_placeholder"))
-        }
+        //}
         
         return cell
     }
@@ -193,18 +193,16 @@ extension PhotosVC: UITableViewDelegate{
         let imgAlbum = UIImageView(frame: CGRect(x: 0, y: 0, width: view.layer.frame.width, height: view.layer.frame.height))
         imgAlbum.contentMode = .scaleAspectFit
         
-        if isSearch
-        {
-            picURL = "\(Constants.imgURL)\(arrFliterResult[indexPath.row].server ?? "")/\(String(describing: arrFliterResult[indexPath.row].id ?? ""))_\(arrFliterResult[indexPath.row].secret ?? "").jpg"
-            imgAlbum.sd_imageIndicator = SDWebImageActivityIndicator.large
-            imgAlbum.sd_setImage(with: URL(string: picURL), placeholderImage: UIImage(named: "ic_placeholder"))
-        }
-        else
-        {
+//        if isSearch
+//        {
+//            picURL = "\(Constants.imgURL)\(arrFliterResult[indexPath.row].server ?? "")/\(String(describing: arrFliterResult[indexPath.row].id ?? ""))_\(arrFliterResult[indexPath.row].secret ?? "").jpg"
+//        }
+        //else
+        //{
             picURL = "\(Constants.imgURL)\(photosVM.albumData.photos?.photo![indexPath.row].server ?? "")/\(String(describing: photosVM.albumData.photos?.photo![indexPath.row].id ?? ""))_\(photosVM.albumData.photos?.photo![indexPath.row].secret ?? "").jpg"
-            imgAlbum.sd_imageIndicator = SDWebImageActivityIndicator.large
-            imgAlbum.sd_setImage(with: URL(string: picURL), placeholderImage: UIImage(named: "ic_placeholder"))
-        }
+       // }
+        imgAlbum.sd_imageIndicator = SDWebImageActivityIndicator.large
+        imgAlbum.sd_setImage(with: URL(string: picURL), placeholderImage: UIImage(named: "ic_placeholder"))
         let mediaZoom = XLMediaZoom(animationTime: 0.3, image: imgAlbum, blurEffect: false)
         //Add the mediaZoom view to your superView and show it.
         view.addSubview(mediaZoom!)
@@ -213,8 +211,9 @@ extension PhotosVC: UITableViewDelegate{
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == photosVM.albumData.photos!.photo!.count - 1
        {
-            if self.photosVM.albumData.photos!.pages! > self.photosVM.albumData.photos!.page!
+            if self.photosVM.albumData.photos!.pages! >= self.photosVM.albumData.photos!.page!
             {
+                var spinner = UIActivityIndicatorView()
                 spinner = UIActivityIndicatorView(style: .medium)
                 spinner.startAnimating()
                 spinner.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: tableView.bounds.width, height: CGFloat(44))
@@ -222,22 +221,39 @@ extension PhotosVC: UITableViewDelegate{
                 tblPhotos.tableFooterView?.isHidden = false
                 
                 // Little delay to show activity indicator
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.0) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [self] in
                  
-                    self.photosVM.getMorePhotos(pageNumber: self.photosVM.albumData.photos!.page! + 1) { (status) in
-                        
-                        if status == "success"
-                        {
-                            self.tblPhotos.reloadData()
+                    if isSearch{
+                        photosVM.getSearchPhotos(pageNumber: photosVM.albumData.photos!.page! + 1, searchText: searchText) { [self] (status) in
+                            
+                            if status == "success"
+                            {
+                                tblPhotos.reloadData()
+                            }
+                            else
+                            {
+                                showAlert(message: status)
+                            }
                         }
-                        else
-                        {
-                            self.showAlert(message: status)
-                        }
-                        self.spinner.stopAnimating()
-                        self.tblPhotos.tableFooterView = nil
-                        self.tblPhotos.tableFooterView?.isHidden = true
                     }
+                    else
+                    {
+                        photosVM.getPhotos(pageNumber: photosVM.albumData.photos!.page! + 1) { [self] (status) in
+                            if status == "success"
+                            {
+                                tblPhotos.reloadData()
+                            }
+                            else
+                            {
+                                showAlert(message: status)
+                            }
+                        }
+                    }
+                    spinner.stopAnimating()
+                    tblPhotos.tableFooterView = nil
+                    tblPhotos.tableFooterView?.isHidden = true
+                    isSearch.toggle()
+                    
                 }
             }
        }
@@ -248,19 +264,37 @@ extension PhotosVC: UITableViewDelegate{
 extension PhotosVC: UISearchBarDelegate{
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
-        isSearch = searchText == "" ? false : true
-        arrFliterResult.removeAll()
-        if photosVM.albumData != nil{
-            for (index, element) in photosVM.albumData.photos!.photo!.enumerated() {
-                let txtSearch = searchText.lowercased()
-                let txtContain = element.title?.lowercased()
-                
-                if (txtContain?.contains(txtSearch)) != false
-                {
-                    arrFliterResult.append(photosVM.albumData.photos!.photo![index])
-                }
+        
+//        isSearch = searchText == "" ? false : true
+//        arrFliterResult.removeAll()
+//        if photosVM.albumData != nil{
+//            for (index, element) in photosVM.albumData.photos!.photo!.enumerated() {
+//                let txtSearch = searchText.lowercased()
+//                let txtContain = element.title?.lowercased()
+//
+//                if (txtContain?.contains(txtSearch)) != false
+//                {
+//                    arrFliterResult.append(photosVM.albumData.photos!.photo![index])
+//                }
+//            }
+//        }
+//        tblPhotos.reloadData()
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        // search in struct for the text
+        isSearch = true
+        searchText = searchBar.text!
+        view.endEditing(true)
+        photosVM.getSearchPhotos(searchText: searchBar.text!) { [self] (status) in
+            if status == "success"
+            {
+                tblPhotos.reloadData()
+            }
+            else
+            {
+                showAlert(message: status)
             }
         }
-        tblPhotos.reloadData()
     }
 }

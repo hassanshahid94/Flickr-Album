@@ -9,6 +9,8 @@ import XCTest
 
 class Flickr_AlbumUITests: XCTestCase {
 
+    var app: XCUIApplication!
+
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 
@@ -38,5 +40,17 @@ class Flickr_AlbumUITests: XCTestCase {
                 XCUIApplication().launch()
             }
         }
+    }
+    
+    func testSearchBar() throws{
+        
+        try super.setUpWithError()
+        continueAfterFailure = false
+        app = XCUIApplication()
+        app.launch()
+        app.buttons["Slide"].tap()
+        app.staticTexts["Get as close as you can to: "].tap()
+
+
     }
 }
