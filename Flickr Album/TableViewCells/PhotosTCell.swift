@@ -17,34 +17,29 @@ class PhotosTCell: UITableViewCell {
     
     //MARK:- Load
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-            super.init(style: style, reuseIdentifier: reuseIdentifier)
-            
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         //adding background view to the contentview
         vwBackground = UIView()
         vwBackground.layer.cornerRadius = 10
         vwBackground.dropShadow(scale: false)
         contentView.addSubview(vwBackground)
         vwBackground.snp.makeConstraints { (make) -> Void in
-            
             make.top.equalTo(contentView.snp.top).inset(10)
             make.leading.equalTo(contentView.snp.leading).inset(10)
             make.trailing.equalTo(contentView.snp.trailing).inset(10)
             make.bottom.equalTo(contentView.snp.bottom).inset(10)
         }
-        
         //Adding label to the background view
         lblTitle = UILabel()
         lblTitle.font = UIFont.FlickAlbum_description
         lblTitle.textAlignment = .center
         lblTitle.numberOfLines = 0
         vwBackground.addSubview(lblTitle)
-        
         lblTitle.snp.makeConstraints { (make) -> Void in
             make.leading.equalTo(10)
             make.trailing.equalTo(-10)
             make.bottom.equalTo(vwBackground.snp.bottom).inset(10)
         }
-        
         //adding imageview to the background view
         imgAlbum = UIImageView()
         imgAlbum.layer.cornerRadius = 10
@@ -59,7 +54,6 @@ class PhotosTCell: UITableViewCell {
             make.bottom.equalTo(lblTitle.snp.top).inset(-10)
         }
     }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

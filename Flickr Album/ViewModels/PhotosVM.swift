@@ -28,15 +28,12 @@ class PhotosVM : NSObject  {
     }
     
     //MARK:- Functions
-    func loadDefaults()
-    {
-        if let photos = DataCache.instance.readObject(forKey: CacheValue.photos)
-        {
+    func loadDefaults() {
+        if let photos = DataCache.instance.readObject(forKey: CacheValue.photos) {
              albumData = Mapper<FlickrAlbumPhotosResponse>().map(JSONObject: photos)
         }
     }
     func getPhotos(pageNumber: Int = 1, completion: @escaping (String) -> Void) {
-        
         let params = GetPhotosBody()
         params.format = "json"
         params.apiKey = Constants.apiKey
@@ -45,17 +42,14 @@ class PhotosVM : NSObject  {
         params.text = ""
         params.contentType = 1
         ServerManager.getAllPhotos(params: params) { [self] (status, data) in
-            if status == "success"
-            {
-                if pageNumber == 1
-                {
+            if status == "success" {
+                if pageNumber == 1 {
                     albumData = data
                 }
                 else {
                     albumData.photos?.page = data?.photos?.page!
                     albumData.photos?.photo?.append(contentsOf: (data!.photos!.photo!))
                 }
-                
                 //Cache Data
                 DataCache.instance.write(object: albumData.toJSON() as NSCoding, forKey: CacheValue.photos)
             }
@@ -64,7 +58,6 @@ class PhotosVM : NSObject  {
     }
     
     public func getSearchPhotos(pageNumber: Int = 1, searchText: String, completion: @escaping (String) -> Void) {
-        
         let params = GetPhotosBody()
         params.format = "json"
         params.apiKey = Constants.apiKey
@@ -72,19 +65,15 @@ class PhotosVM : NSObject  {
         params.page = pageNumber
         params.text = searchText
         params.contentType = 1
-        
         ServerManager.getSearchPhotos(params: params) { [self] (status, data) in
-            if status == "success"
-            {
-                if pageNumber == 1
-                {
+            if status == "success" {
+                if pageNumber == 1 {
                     albumData = data
                 }
-                else{
+                else {
                     albumData.photos?.page = data?.photos?.page!
                     albumData.photos?.photo?.append(contentsOf: (data!.photos!.photo!))
                 }
-                
                 //Cache Data
                 DataCache.instance.write(object: albumData.toJSON() as NSCoding, forKey: CacheValue.photos)
             }

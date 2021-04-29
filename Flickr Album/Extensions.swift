@@ -10,7 +10,6 @@ import UIKit
 
 // MARK: - UIView Extension
 extension UIView {
-
   func dropShadow(scale: Bool = true) {
     layer.masksToBounds = false
     layer.shadowOffset = CGSize(width: -1, height: 1)
@@ -23,9 +22,7 @@ extension UIView {
 
 // MARK: - UIColor Extension
 extension UIColor {
-    
     static let FlickrAlbum_theme = UIColor(hex: 0x416ED2)
-    
     // Create a UIColor from RGB
     convenience init(red: Int, green: Int, blue: Int, a: CGFloat = 1.0) {
         self.init(
@@ -35,7 +32,6 @@ extension UIColor {
             alpha: a
         )
     }
-    
     // Create a UIColor from a hex value (E.g 0x000000)
     convenience init(hex: Int, a: CGFloat = 1.0) {
         self.init(
@@ -49,13 +45,13 @@ extension UIColor {
 
 // MARK: - UIFont Extension
 extension UIFont {
-    static let FlickAlbum_description = UIFont(name: "Helvetica Neue", size: 14)
+    static let FlickAlbum_description = UIFont(name: "Helvetica Neue", size: 14.0)
     static let FlickAlbum_heading = UIFont(name: "Helvetica Neue Bold", size: 18.0)
 }
 
+// MARK: - UIViewController Extension
 extension UIViewController {
-    func showAlert(message: String)
-    {
+    func showAlert(message: String) {
         let alert = UIAlertController(title: "Flickr Album", message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: nil)

@@ -1,0 +1,58 @@
+{
+  "Animals": {
+    "Pets": [
+      "Guppy",
+      "Parrot",
+      "GoldFish",
+      "Dog",
+      "Cat"
+    ],
+    "Wild animals": [
+      "Tiger",
+      "Ant",
+      "Tetra",
+      "Peafowl",
+      "Mongoose"
+    ],
+    "Domestic animals": [
+      "Cow",
+      "Pig",
+      "Goat",
+      "Horse"
+    ]
+  },
+  "Food": {
+    "Fast food": [
+      "Cheeseburger",
+      "Hamburger"
+    ],
+    "Dessert": [
+      "Chocolate",
+      "Cookie",
+      "Cake",
+      "Pie"
+    ]
+  },
+  "Vechicle": {
+    "Motorcycle": [
+      "Harley Davidson"
+    ],
+    "Car": [
+      "Lamborghini",
+      "Ferrari",
+      "Bugatti",
+      "BMW",
+      "Mercedes"
+    ]
+  },
+  "Movie": {
+    "Science fiction": [
+      "Sunshine",
+      "Interstellar",
+      "The Moon",
+      "Oblivion",
+      "Star Trek",
+      "Star Wars"
+    ]
+  }
+}

@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		01E626432AE9A843A1F620BF /* Pods_Flickr_Album.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4EA9EC3167E2E84DECC6295 /* Pods_Flickr_Album.framework */; };
+		5C1D8E55263A19B5000DC9A5 /* FiltersCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C1D8E54263A19B5000DC9A5 /* FiltersCCell.swift */; };
+		5C2C52262639A8F400C5C5E5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C52252639A8F400C5C5E5 /* ViewController.swift */; };
+		5C2C522B2639B03F00C5C5E5 /* flickr-keyword-struct.json in Resources */ = {isa = PBXBuildFile; fileRef = 5C2C522A2639B03F00C5C5E5 /* flickr-keyword-struct.json */; };
+		5C2C52362639B30200C5C5E5 /* FlickrAlbumVechicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C52312639B30200C5C5E5 /* FlickrAlbumVechicle.swift */; };
+		5C2C52372639B30200C5C5E5 /* FlickrAlbumFilterKeyWordsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C52322639B30200C5C5E5 /* FlickrAlbumFilterKeyWordsResponse.swift */; };
+		5C2C52382639B30200C5C5E5 /* FlickrAlbumMovie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C52332639B30200C5C5E5 /* FlickrAlbumMovie.swift */; };
+		5C2C52392639B30200C5C5E5 /* FlickrAlbumFood.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C52342639B30200C5C5E5 /* FlickrAlbumFood.swift */; };
+		5C2C523A2639B30200C5C5E5 /* FlickrAlbumAnimal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2C52352639B30200C5C5E5 /* FlickrAlbumAnimal.swift */; };
 		5C2EBEB626334F4700A27069 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2EBEB526334F4700A27069 /* Extensions.swift */; };
 		5CACE0F52633171B002B4E75 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CACE0F42633171B002B4E75 /* AppDelegate.swift */; };
 		5CACE0F72633171B002B4E75 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CACE0F62633171B002B4E75 /* SceneDelegate.swift */; };
@@ -52,6 +60,14 @@
 		1B022C5DB4C9A3EA697EEEE3 /* Pods_Flickr_Album_Flickr_AlbumUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Flickr_Album_Flickr_AlbumUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4EE2EB76945ACE4F8208DE75 /* Pods-Flickr Album.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Flickr Album.debug.xcconfig"; path = "Target Support Files/Pods-Flickr Album/Pods-Flickr Album.debug.xcconfig"; sourceTree = "<group>"; };
 		4FD325CF9EA588029B199DAD /* Pods_Flickr_AlbumTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Flickr_AlbumTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C1D8E54263A19B5000DC9A5 /* FiltersCCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersCCell.swift; sourceTree = "<group>"; };
+		5C2C52252639A8F400C5C5E5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		5C2C522A2639B03F00C5C5E5 /* flickr-keyword-struct.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "flickr-keyword-struct.json"; sourceTree = "<group>"; };
+		5C2C52312639B30200C5C5E5 /* FlickrAlbumVechicle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrAlbumVechicle.swift; sourceTree = "<group>"; };
+		5C2C52322639B30200C5C5E5 /* FlickrAlbumFilterKeyWordsResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrAlbumFilterKeyWordsResponse.swift; sourceTree = "<group>"; };
+		5C2C52332639B30200C5C5E5 /* FlickrAlbumMovie.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrAlbumMovie.swift; sourceTree = "<group>"; };
+		5C2C52342639B30200C5C5E5 /* FlickrAlbumFood.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrAlbumFood.swift; sourceTree = "<group>"; };
+		5C2C52352639B30200C5C5E5 /* FlickrAlbumAnimal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrAlbumAnimal.swift; sourceTree = "<group>"; };
 		5C2EBEB526334F4700A27069 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		5CACE0F12633171B002B4E75 /* Flickr Album.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Flickr Album.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CACE0F42633171B002B4E75 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -125,6 +141,26 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		5C1D8E53263A1991000DC9A5 /* CollectionViewCells */ = {
+			isa = PBXGroup;
+			children = (
+				5C1D8E54263A19B5000DC9A5 /* FiltersCCell.swift */,
+			);
+			path = CollectionViewCells;
+			sourceTree = "<group>";
+		};
+		5C2C52302639B2EB00C5C5E5 /* FilterKeyWords Response */ = {
+			isa = PBXGroup;
+			children = (
+				5C2C52322639B30200C5C5E5 /* FlickrAlbumFilterKeyWordsResponse.swift */,
+				5C2C52352639B30200C5C5E5 /* FlickrAlbumAnimal.swift */,
+				5C2C52342639B30200C5C5E5 /* FlickrAlbumFood.swift */,
+				5C2C52332639B30200C5C5E5 /* FlickrAlbumMovie.swift */,
+				5C2C52312639B30200C5C5E5 /* FlickrAlbumVechicle.swift */,
+			);
+			path = "FilterKeyWords Response";
+			sourceTree = "<group>";
+		};
 		5CACE0E82633171B002B4E75 = {
 			isa = PBXGroup;
 			children = (
@@ -152,6 +188,7 @@
 			children = (
 				5CACE13726331A85002B4E75 /* Models */,
 				5CACE15326331E12002B4E75 /* ViewModels */,
+				5C1D8E53263A1991000DC9A5 /* CollectionViewCells */,
 				5CF62B4326345D1F0008E19C /* TableViewCells */,
 				5CACE15526331E4D002B4E75 /* ViewControllers */,
 				5CACE0F42633171B002B4E75 /* AppDelegate.swift */,
@@ -160,6 +197,7 @@
 				5CACE0FD2633171C002B4E75 /* Assets.xcassets */,
 				5CACE0FF2633171C002B4E75 /* LaunchScreen.storyboard */,
 				5CACE1022633171C002B4E75 /* Info.plist */,
+				5C2C522A2639B03F00C5C5E5 /* flickr-keyword-struct.json */,
 				5CACE14226331BA3002B4E75 /* ServerManager.swift */,
 				5CACE14726331BEC002B4E75 /* Constants.swift */,
 				5C2EBEB526334F4700A27069 /* Extensions.swift */,
@@ -189,6 +227,7 @@
 		5CACE13726331A85002B4E75 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				5C2C52302639B2EB00C5C5E5 /* FilterKeyWords Response */,
 				5CACE14D26331C90002B4E75 /* APIs Parameters */,
 				5CACE14C26331C7D002B4E75 /* APIs Responses */,
 			);
@@ -225,6 +264,7 @@
 			isa = PBXGroup;
 			children = (
 				5CACE15926331EBC002B4E75 /* PhotosVC.swift */,
+				5C2C52252639A8F400C5C5E5 /* ViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -363,6 +403,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C2C522B2639B03F00C5C5E5 /* flickr-keyword-struct.json in Resources */,
 				5CACE1012633171C002B4E75 /* LaunchScreen.storyboard in Resources */,
 				5CACE0FE2633171C002B4E75 /* Assets.xcassets in Resources */,
 				5CACE0FC2633171B002B4E75 /* Main.storyboard in Resources */,
@@ -496,16 +537,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				5CACE15A26331EBC002B4E75 /* PhotosVC.swift in Sources */,
+				5C2C52392639B30200C5C5E5 /* FlickrAlbumFood.swift in Sources */,
 				5CACE0F52633171B002B4E75 /* AppDelegate.swift in Sources */,
 				5CACE0F72633171B002B4E75 /* SceneDelegate.swift in Sources */,
 				5CACE13A26331AA0002B4E75 /* FlickrAlbumPhoto.swift in Sources */,
 				5CACE14826331BEC002B4E75 /* Constants.swift in Sources */,
 				5CACE14326331BA3002B4E75 /* ServerManager.swift in Sources */,
 				5CACE13B26331AA0002B4E75 /* FlickrAlbumPhotosResponse.swift in Sources */,
+				5C2C52362639B30200C5C5E5 /* FlickrAlbumVechicle.swift in Sources */,
+				5C2C52372639B30200C5C5E5 /* FlickrAlbumFilterKeyWordsResponse.swift in Sources */,
 				5CACE1752633266F002B4E75 /* FlickrAlbumPhotos.swift in Sources */,
+				5C2C52262639A8F400C5C5E5 /* ViewController.swift in Sources */,
 				5CF62B4526345D380008E19C /* PhotosTCell.swift in Sources */,
+				5C1D8E55263A19B5000DC9A5 /* FiltersCCell.swift in Sources */,
 				5C2EBEB626334F4700A27069 /* Extensions.swift in Sources */,
+				5C2C52382639B30200C5C5E5 /* FlickrAlbumMovie.swift in Sources */,
 				5CACE14F26331CAC002B4E75 /* Parameters.swift in Sources */,
+				5C2C523A2639B30200C5C5E5 /* FlickrAlbumAnimal.swift in Sources */,
 				5CACE16B26331F7F002B4E75 /* PhotosVM.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

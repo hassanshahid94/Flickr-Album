@@ -8,7 +8,7 @@
 import Foundation 
 import ObjectMapper
 
-class FlickrAlbumPhoto : NSObject, Mappable{
+class FlickrAlbumPhoto : NSObject, Mappable {
 
 	var farm : Int?
 	var id : String?
@@ -20,14 +20,13 @@ class FlickrAlbumPhoto : NSObject, Mappable{
 	var server : String?
 	var title : String?
 
-	class func newInstance(map: Map) -> Mappable?{
+	class func newInstance(map: Map) -> Mappable? {
 		return FlickrAlbumPhoto()
 	}
 	required init?(map: Map){}
 	private override init(){}
 
-	func mapping(map: Map)
-	{
+	func mapping(map: Map) {
 		farm <- map["farm"]
 		id <- map["id"]
 		isfamily <- map["isfamily"]
@@ -37,6 +36,5 @@ class FlickrAlbumPhoto : NSObject, Mappable{
 		secret <- map["secret"]
 		server <- map["server"]
 		title <- map["title"]
-		
 	}
 }
