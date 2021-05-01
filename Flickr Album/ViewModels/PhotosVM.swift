@@ -20,12 +20,19 @@ class PhotosVM : NSObject  {
             self.bindPhotosVMToController()
         }
     }
-
+    
     //MARK:- Constructor
     override init() {
         super.init()
-        if albumData == nil {
-            getPhotos { (status) in
+        getPhotos { [self] (status) in
+            if status != "success" {
+                //Loading cache data if internet isn't available.
+                if let photos = DataCache.instance.readObject(forKey: CacheValue.photos) {
+                    albumData = Mapper<FlickrAlbumPhotosResponse>().map(JSONObject: photos)
+               }
+               else {
+                   albumData = nil
+               }
             }
         }
     }
@@ -45,18 +52,11 @@ class PhotosVM : NSObject  {
                     albumData = data
                 }
                 else {
-                    albumData.photos?.page = data?.photos?.page!
-                    albumData.photos?.photo?.append(contentsOf: (data!.photos!.photo!))
+                     albumData.photos?.page = data?.photos?.page!
+                     albumData.photos?.photo?.append(contentsOf: (data!.photos!.photo!))
                 }
                 //Cache Data
-                DataCache.instance.write(object: albumData.toJSON() as NSCoding, forKey: CacheValue.photos)
-            }
-            
-            if let photos = DataCache.instance.readObject(forKey: CacheValue.photos) {
-                 albumData = Mapper<FlickrAlbumPhotosResponse>().map(JSONObject: photos)
-            }
-            else {
-                albumData = nil
+                 DataCache.instance.write(object: albumData.toJSON() as NSCoding, forKey: CacheValue.photos)
             }
             completion(status)
         }

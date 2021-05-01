@@ -106,7 +106,7 @@ class PhotosVC: UIViewController {
         photosVM.getPhotos { [self] (status) in
             if status == "success" {
                 lblDescription.text = "Recent Photos"
-                callToViewModelForUIUpdate()
+                tblPhotos.reloadData()
             }
             else {
                 //showing error message
@@ -202,16 +202,8 @@ extension PhotosVC: UITableViewDelegate {
         
         present(imgViewer, animated: true, completion: nil)
     }
-   
     //Using this delegate for pagination
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        
-//        if let lastVisibleIndexPath = tableView.indexPathsForVisibleRows?.last {
-//                if indexPath == lastVisibleIndexPath {
-//                    // do here...
-//                    showAlert(message: "Last")
-//                }
-//            }
         if indexPath.row == photosVM.albumData.photos!.photo!.count - 1 {
             if photosVM.albumData.photos!.pages! >= photosVM.albumData.photos!.page! {
                 spinner.color = UIColor.FlickrAlbum_theme
@@ -235,6 +227,7 @@ extension PhotosVC: UITableViewDelegate {
                     }
                 }
                 else {
+                    //Calling Recent photos API
                     photosVM.getPhotos(pageNumber: photosVM.albumData.photos!.page! + 1) { [self] (status) in
                         if status == "success" {
                              tblPhotos.reloadData()
@@ -249,7 +242,7 @@ extension PhotosVC: UITableViewDelegate {
                 tblPhotos.tableFooterView = nil
                 tblPhotos.tableFooterView?.isHidden = true
             }
-       }
+        }
    }
 }
 
