@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double LoadingPlaceholderViewVersionNumber;
-FOUNDATION_EXPORT const unsigned char LoadingPlaceholderViewVersionString[];
+FOUNDATION_EXPORT double GSImageViewerControllerVersionNumber;
+FOUNDATION_EXPORT const unsigned char GSImageViewerControllerVersionString[];
 

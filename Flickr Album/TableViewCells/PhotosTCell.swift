@@ -15,13 +15,13 @@ class PhotosTCell: UITableViewCell {
     var imgAlbum: UIImageView!
     var lblTitle: UILabel!
     
-    //MARK:- Load
+    //MARK:- Constructor
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         //adding background view to the contentview
         vwBackground = UIView()
         vwBackground.layer.cornerRadius = 10
-        vwBackground.dropShadow(scale: false)
+        vwBackground.dropShadow()
         contentView.addSubview(vwBackground)
         vwBackground.snp.makeConstraints { (make) -> Void in
             make.top.equalTo(contentView.snp.top).inset(10)

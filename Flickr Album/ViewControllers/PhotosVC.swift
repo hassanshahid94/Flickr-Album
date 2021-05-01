@@ -8,37 +8,33 @@
 import UIKit
 import SnapKit
 import SDWebImage
-import LoadingPlaceholderView
 import XLMediaZoom
+import GSImageViewerController
 
 class PhotosVC: UIViewController {
     
     //MARK:- Variables
     var isSearch = false
-    var photosVM : PhotosVM!
-    var loadingPlaceholderView = LoadingPlaceholderView()
+    var photosVM = PhotosVM()
     var refreshControl = UIRefreshControl()
-    var cellsIdentifiers = [
-        "PhotosTCell",
-        "PhotosTCell",
-        "PhotosTCell",
-        "PhotosTCell"
-    ]
     
     //MARK:- Variables for Outlets/UI
     var lblHeading: UILabel!
     var txtSearch: UISearchBar!
-    var tblPhotos: UITableView!{
-        didSet {
-            tblPhotos.coverableCellsIdentifiers = cellsIdentifiers
-        }
-    }
+    var lblDescription: UILabel!
+    var tblPhotos: UITableView!
+    var spinner = UIActivityIndicatorView()
     
     //MARK:- Load
     override func viewDidLoad() {
         super.viewDidLoad()
-        callToViewModelForUIUpdate()
+        //Creating UI Programmatically
         configureUI()
+        //Binding API data response to UI
+        callToViewModelForUIUpdate()
+    }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
     }
     
     //MARK:- Functions
@@ -62,11 +58,24 @@ class PhotosVC: UIViewController {
         txtSearch.searchTextField.font = UIFont.FlickAlbum_description
         txtSearch.delegate = self
         txtSearch.showsScopeBar = true
+        txtSearch.setShowsCancelButton(true, animated: true)
         view.addSubview(txtSearch)
         txtSearch.snp.makeConstraints { (make) -> Void in
             make.height.equalTo(40)
             make.width.equalTo(lblHeading.snp.width)
             make.top.equalTo(lblHeading.snp.bottom).offset(10)
+            make.centerXWithinMargins.equalToSuperview()
+        }
+        //Adding description label Programmatically
+        lblDescription = UILabel()
+        lblDescription.text = "Recent Photos"
+        lblDescription.textColor = UIColor.FlickrAlbum_theme
+        lblDescription.textAlignment = .center
+        lblDescription.font = UIFont.FlickAlbum_heading
+        view.addSubview(lblDescription)
+        lblDescription.snp.makeConstraints { (make) -> Void in
+            make.width.equalTo(view.frame.width * 0.95)
+            make.top.equalTo(txtSearch.snp.bottom).offset(10)
             make.centerXWithinMargins.equalToSuperview()
         }
         // Adding a TableView Programtically
@@ -80,54 +89,63 @@ class PhotosVC: UIViewController {
         tblPhotos.delegate = self
         view.addSubview(tblPhotos)
         tblPhotos.snp.makeConstraints { (make) -> Void in
-            make.top.equalTo(txtSearch.snp.bottom).offset(10)
+            make.top.equalTo(lblDescription.snp.bottom).offset(10)
             make.width.equalToSuperview()
             make.bottom.equalTo(view.snp.bottom).inset(10)
             make.centerXWithinMargins.equalToSuperview()
         }
        // pull to refresh tableview
         refreshControl = UIRefreshControl()
+        refreshControl.tintColor = UIColor.FlickrAlbum_theme
         refreshControl.attributedTitle = NSAttributedString(string: "")
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         tblPhotos.addSubview(refreshControl)
-        //Loading skeleton view and API call
-        setupLoadingPlaceholderView()
-        performFakeNetworkRequest()
-        loadPhotos()
+        addSpinnerToView()
     }
     func loadPhotos() {
         photosVM.getPhotos { [self] (status) in
             if status == "success" {
+                lblDescription.text = "Recent Photos"
                 callToViewModelForUIUpdate()
             }
             else {
+                //showing error message
                 showAlert(message: status)
             }
-            finishFakeRequest()
+            removeSpinnerFromView()
         }
     }
     func callToViewModelForUIUpdate() {
-        photosVM =  PhotosVM()
         photosVM.bindPhotosVMToController =  { [self] in
-             tblPhotos.reloadData()
+            if photosVM.albumData == nil {
+                showAlert(message: "The internet connection appears to be offline.")
+            }
+            removeSpinnerFromView()
+            tblPhotos.reloadData()
         }
-    }
-    func performFakeNetworkRequest() {
-        loadingPlaceholderView.cover(view)
-    }
-    func finishFakeRequest() {
-        refreshControl.endRefreshing()
-        loadingPlaceholderView.uncover()
-    }
-    func setupLoadingPlaceholderView() {
-        
-        loadingPlaceholderView.gradientColor = .white
-        loadingPlaceholderView.backgroundColor = .white
     }
     @objc func refresh(_ sender: Any) {
         txtSearch.text = ""
         view.endEditing(true)
         loadPhotos()
+    }
+    func addSpinnerToView() {
+        tblPhotos.isHidden = true
+        spinner = UIActivityIndicatorView(style: .large)
+        spinner.color = UIColor.FlickrAlbum_theme
+        view.addSubview(spinner)
+        spinner.snp.makeConstraints { (make) -> Void in
+            make.width.equalTo(view.frame.width)
+            make.height.equalTo(view.frame.height)
+            make.centerXWithinMargins.equalToSuperview()
+            make.centerYWithinMargins.equalToSuperview()
+        }
+        spinner.startAnimating()
+    }
+    func removeSpinnerFromView() {
+        refreshControl.endRefreshing()
+        tblPhotos.isHidden = false
+        spinner.stopAnimating()
     }
 }
 
@@ -145,7 +163,7 @@ extension PhotosVC: UITableViewDataSource {
         let picURL = "\(Constants.imgURL)\(photosVM.albumData.photos?.photo![indexPath.row].server ?? "")/\(String(describing: photosVM.albumData.photos?.photo![indexPath.row].id ?? ""))_\(photosVM.albumData.photos?.photo![indexPath.row].secret ?? "").jpg"
         //showing the spinner when image is loading
         cell.imgAlbum.sd_imageIndicator = SDWebImageActivityIndicator.large
-        //setting the imageview
+        //setting the image on ImageView
         cell.imgAlbum.sd_setImage(with: URL(string: picURL), placeholderImage: UIImage(named: "ic_placeholder"))
         return cell
     }
@@ -153,37 +171,65 @@ extension PhotosVC: UITableViewDataSource {
 
 //MARK:- UITableView Delegate
 extension PhotosVC: UITableViewDelegate {
+    //Using this delegate to show full image view
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //Initialize both your image and the mediaZoom view associated.
-        let imgAlbum = UIImageView(frame: CGRect(x: 0, y: 0, width: view.layer.frame.width, height: view.layer.frame.height))
-        imgAlbum.contentMode = .scaleAspectFit
-        //creating the image URL
+        view.endEditing(true)
+        // access the tableview cell that has been tapped
+        guard let cell = tableView.cellForRow(at: indexPath) as? PhotosTCell else { return }
+        
+        // image url required for HD image
         let picURL = "\(Constants.imgURL)\(photosVM.albumData.photos?.photo![indexPath.row].server ?? "")/\(String(describing: photosVM.albumData.photos?.photo![indexPath.row].id ?? ""))_\(photosVM.albumData.photos?.photo![indexPath.row].secret ?? "").jpg"
-        //Showing the spinner during image loading
-        imgAlbum.sd_imageIndicator = SDWebImageActivityIndicator.large
-        //setting the imageview
-        imgAlbum.sd_setImage(with: URL(string: picURL), placeholderImage: UIImage(named: "ic_placeholder"))
-        //Initilaize the zoomimage
-        let mediaZoom = XLMediaZoom(animationTime: 0.3, image: imgAlbum, blurEffect: false)
-        //Add the mediaZoom view to your superView and show it.
-        view.addSubview(mediaZoom!)
-        mediaZoom!.show()
+       
+        // using GSImageInfo library to present a full screen image view
+        let imageInfo = GSImageInfo(image: cell.imgAlbum.image!, imageMode: .aspectFit, imageHD: URL(string: picURL))
+        let transitionInfo = GSTransitionInfo(fromView: cell.imgAlbum)
+        let imgViewer = GSImageViewerController(imageInfo: imageInfo, transitionInfo: transitionInfo)
+        
+        //only apply the blur if the user hasn't disabled transparency effects
+        if !UIAccessibility.isReduceTransparencyEnabled {
+            imgViewer.backgroundColor = .clear
+            let blurEffect = UIBlurEffect(style: .dark)
+            let blurEffectView = UIVisualEffectView(effect: blurEffect)
+            //always fill the view
+            blurEffectView.frame = self.view.bounds
+            blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+
+            imgViewer.view.addSubview(blurEffectView) //if you have more UIViews, use an insertSubview API to place it where needed
+            imgViewer.view.sendSubviewToBack(blurEffectView)
+        } else {
+            imgViewer.backgroundColor = .black
+        }
+        
+        present(imgViewer, animated: true, completion: nil)
     }
+   
+    //Using this delegate for pagination
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+//        if let lastVisibleIndexPath = tableView.indexPathsForVisibleRows?.last {
+//                if indexPath == lastVisibleIndexPath {
+//                    // do here...
+//                    showAlert(message: "Last")
+//                }
+//            }
         if indexPath.row == photosVM.albumData.photos!.photo!.count - 1 {
-            if self.photosVM.albumData.photos!.pages! >= self.photosVM.albumData.photos!.page! {
-                var spinner = UIActivityIndicatorView()
+            if photosVM.albumData.photos!.pages! >= photosVM.albumData.photos!.page! {
+                spinner.color = UIColor.FlickrAlbum_theme
                 spinner = UIActivityIndicatorView(style: .medium)
                 spinner.startAnimating()
                 spinner.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: tableView.bounds.width, height: CGFloat(44))
                 tblPhotos.tableFooterView = spinner
                 tblPhotos.tableFooterView?.isHidden = false
                 if isSearch {
+                    //Calling search API with search keywords
                     photosVM.getSearchPhotos(pageNumber: photosVM.albumData.photos!.page! + 1, searchText: txtSearch.text!) { [self] (status) in
+                        lblDescription.text = txtSearch.text
                         if status == "success" {
+                            lblDescription.text = txtSearch.text
                             tblPhotos.reloadData()
                         }
                         else {
+                            //showing error message
                             showAlert(message: status)
                         }
                     }
@@ -191,9 +237,10 @@ extension PhotosVC: UITableViewDelegate {
                 else {
                     photosVM.getPhotos(pageNumber: photosVM.albumData.photos!.page! + 1) { [self] (status) in
                         if status == "success" {
-                            tblPhotos.reloadData()
+                             tblPhotos.reloadData()
                         }
                         else {
+                            //showing error message
                             showAlert(message: status)
                         }
                     }
@@ -213,30 +260,35 @@ extension PhotosVC: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         isSearch = searchText == "" ? false : true
         if !isSearch{
-            //Loading skeletonview and APIs call
-            setupLoadingPlaceholderView()
-            performFakeNetworkRequest()
+            //Showing recent photos when search is not active
+            addSpinnerToView()
             loadPhotos()
         }
     }
     // this function is called when search button is tapped!
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        //Loading skeletonview
         if txtSearch.text == "0" {
             return
         }
-        setupLoadingPlaceholderView()
-        performFakeNetworkRequest()
+        //Adding spinner to the view and hiding the tableview
+        addSpinnerToView()
         isSearch = true
         view.endEditing(true)
         photosVM.getSearchPhotos(searchText: txtSearch.text!) { [self] (status) in
             if status == "success" {
+                lblDescription.text = txtSearch.text
                 tblPhotos.reloadData()
             }
             else {
+                //showing error message
                 showAlert(message: status)
             }
-            finishFakeRequest()
+            //remove the spinner from the view and show the tableview
+            removeSpinnerFromView()
         }
+    }
+    //keyboard dismiss when cancel button has been tapped
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.perform(#selector(self.resignFirstResponder), with: nil, afterDelay: 0.1)
     }
 }

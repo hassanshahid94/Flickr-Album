@@ -11,10 +11,10 @@ pod 'SDWebImage', '~> 5.0'
 pod 'AlamofireObjectMapper', '~> 5.2'
 pod 'ObjectMapper', '~> 3.5'
 pod 'SwiftyJSON', '~> 4.0'
-pod 'LoadingPlaceholderView'
 pod 'DataCache'
 pod 'SnapKit', '~> 5.0.0'
 pod 'XLMediaZoom'
+pod 'GSImageViewerController'
   target 'Flickr AlbumTests' do
     inherit! :search_paths
     # Pods for testing

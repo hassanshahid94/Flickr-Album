@@ -29,6 +29,7 @@ class ServerManager {
                     completion("success",data)
                 case .failure(let error):
                     completion(error.localizedDescription, nil)
+                    
             }
         }
     }

@@ -15,24 +15,22 @@ class PhotosVM : NSObject  {
     
     //MARK:- Variables
     var bindPhotosVMToController : (() -> ()) = {}
-    var albumData : FlickrAlbumPhotosResponse! {
+    var albumData: FlickrAlbumPhotosResponse! {
         didSet {
             self.bindPhotosVMToController()
         }
     }
-    
-    //MARK:- Load
+
+    //MARK:- Constructor
     override init() {
         super.init()
-        loadDefaults()
-    }
-    
-    //MARK:- Functions
-    func loadDefaults() {
-        if let photos = DataCache.instance.readObject(forKey: CacheValue.photos) {
-             albumData = Mapper<FlickrAlbumPhotosResponse>().map(JSONObject: photos)
+        if albumData == nil {
+            getPhotos { (status) in
+            }
         }
     }
+    
+    //MARK:- Functions        
     func getPhotos(pageNumber: Int = 1, completion: @escaping (String) -> Void) {
         let params = GetPhotosBody()
         params.format = "json"
@@ -53,10 +51,16 @@ class PhotosVM : NSObject  {
                 //Cache Data
                 DataCache.instance.write(object: albumData.toJSON() as NSCoding, forKey: CacheValue.photos)
             }
+            
+            if let photos = DataCache.instance.readObject(forKey: CacheValue.photos) {
+                 albumData = Mapper<FlickrAlbumPhotosResponse>().map(JSONObject: photos)
+            }
+            else {
+                albumData = nil
+            }
             completion(status)
         }
     }
-    
     public func getSearchPhotos(pageNumber: Int = 1, searchText: String, completion: @escaping (String) -> Void) {
         let params = GetPhotosBody()
         params.format = "json"
@@ -81,3 +85,4 @@ class PhotosVM : NSObject  {
         }
     }
 }
+
