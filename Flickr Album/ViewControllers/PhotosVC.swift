@@ -8,8 +8,8 @@
 import UIKit
 import SnapKit
 import SDWebImage
-import XLMediaZoom
 import GSImageViewerController
+import DropDown
 
 class PhotosVC: UIViewController {
     
@@ -17,6 +17,10 @@ class PhotosVC: UIViewController {
     var isSearch = false
     var photosVM = PhotosVM()
     var refreshControl = UIRefreshControl()
+    let dropDownKeyWords = DropDown()
+    var keywordsDict: NSDictionary! // First Heirarchy -> Dict for predefine keywords
+    var keywordsDictLevel2: NSDictionary! // Second Heirarchy -> Dict for predefine keywords
+    var items = [String]() // Second/Third Heirarchy -> Array using in CollectionView for predefine keywords
     
     //MARK:- Variables for Outlets/UI
     var lblHeading: UILabel!
@@ -24,10 +28,13 @@ class PhotosVC: UIViewController {
     var lblDescription: UILabel!
     var tblPhotos: UITableView!
     var spinner = UIActivityIndicatorView()
+    var btnDropDown: UIButton!
+    var collectionVwFilter: UICollectionView!
     
     //MARK:- Load
     override func viewDidLoad() {
         super.viewDidLoad()
+        loadPredefineKeywords()
         //Creating UI Programmatically
         configureUI()
         //Binding API data response to UI
@@ -38,6 +45,13 @@ class PhotosVC: UIViewController {
     }
     
     //MARK:- Functions
+    func loadPredefineKeywords() {
+        // reading json keywords from json file
+        keywordsDict = readData(fileName: "flickr-keyword-struct")!
+        // loading level 1 keywords in dropdown
+        setupDropDown(itemsCV: keywordsDict.allKeys as! [String])
+        setUpCollectionViewForKeywords()
+    }
     func configureUI() {
         // Adding a Label Heading Programtically
         lblHeading = UILabel()
@@ -47,9 +61,25 @@ class PhotosVC: UIViewController {
         lblHeading.font = UIFont.FlickAlbum_heading
         view.addSubview(lblHeading)
         lblHeading.snp.makeConstraints { (make) -> Void in
-            make.width.equalTo(self.view.frame.width * 0.95)
+            make.width.equalTo(view.frame.width * 0.95)
             make.topMargin.equalTo(10)
             make.centerXWithinMargins.equalToSuperview()
+        }
+        // Adding a DropDown Button Heading Programtically
+        btnDropDown = UIButton()
+        btnDropDown.setTitle("Categories", for: .normal)
+        btnDropDown.titleLabel?.font = UIFont.FlickAlbum_description
+        btnDropDown.layer.borderColor = UIColor.FlickrAlbum_theme.cgColor
+        btnDropDown.layer.borderWidth = 1
+        btnDropDown.layer.cornerRadius = 10
+        btnDropDown.setTitleColor(UIColor.FlickrAlbum_theme, for: .normal)
+        btnDropDown.addTarget(self, action: #selector(btnDropDownAction), for: .touchUpInside)
+        view.addSubview(btnDropDown)
+        btnDropDown.snp.makeConstraints { (make) -> Void in
+            make.trailing.equalTo(-10)
+            make.top.equalTo(lblHeading.snp.bottom).offset(10)
+            make.width.equalTo(100)
+            make.height.equalTo(40)
         }
         // Adding a search bar Programtically
         txtSearch = UISearchBar()
@@ -58,13 +88,12 @@ class PhotosVC: UIViewController {
         txtSearch.searchTextField.font = UIFont.FlickAlbum_description
         txtSearch.delegate = self
         txtSearch.showsScopeBar = true
-        txtSearch.setShowsCancelButton(true, animated: true)
         view.addSubview(txtSearch)
         txtSearch.snp.makeConstraints { (make) -> Void in
             make.height.equalTo(40)
-            make.width.equalTo(lblHeading.snp.width)
-            make.top.equalTo(lblHeading.snp.bottom).offset(10)
-            make.centerXWithinMargins.equalToSuperview()
+            make.leading.equalTo(10)
+            make.trailing.equalTo(btnDropDown.snp.leading).offset(-10)
+            make.centerY.equalTo(btnDropDown.snp.centerY)
         }
         //Adding description label Programmatically
         lblDescription = UILabel()
@@ -102,6 +131,15 @@ class PhotosVC: UIViewController {
         tblPhotos.addSubview(refreshControl)
         addSpinnerToView()
     }
+    func callToViewModelForUIUpdate() {
+        photosVM.bindPhotosVMToController =  { [self] in
+            if photosVM.albumData == nil {
+                showAlert(message: "The internet connection appears to be offline.")
+            }
+            removeSpinnerFromView()
+            tblPhotos.reloadData()
+        }
+    }
     func loadPhotos() {
         photosVM.getPhotos { [self] (status) in
             if status == "success" {
@@ -115,15 +153,7 @@ class PhotosVC: UIViewController {
             removeSpinnerFromView()
         }
     }
-    func callToViewModelForUIUpdate() {
-        photosVM.bindPhotosVMToController =  { [self] in
-            if photosVM.albumData == nil {
-                showAlert(message: "The internet connection appears to be offline.")
-            }
-            removeSpinnerFromView()
-            tblPhotos.reloadData()
-        }
-    }
+    //pull to refresh fucntion for TableView
     @objc func refresh(_ sender: Any) {
         txtSearch.text = ""
         view.endEditing(true)
@@ -146,6 +176,80 @@ class PhotosVC: UIViewController {
         refreshControl.endRefreshing()
         tblPhotos.isHidden = false
         spinner.stopAnimating()
+    }
+    //Showing drop when clicked
+    @objc func btnDropDownAction(sender : UIButton) {
+        // disaply the drop down that contains level 1 keywords
+        view.endEditing(true)
+        dropDownKeyWords.show()
+    }
+    //Setting up the dropdown values
+    func setupDropDown(itemsCV: [String]) {
+        dropDownKeyWords.anchorView = btnDropDown // UIView or UIBarButtonItem
+        // Will set a custom width instead of the anchor view width
+        dropDownKeyWords.width = 200
+        //dropDownKeyWords.direction = .top
+        dropDownKeyWords.dataSource = itemsCV
+        dropDownKeyWords.selectionAction = { [unowned self] (index, item) in
+            addSpinnerToView()
+            btnDropDown.setTitle(item, for: .normal)
+            txtSearch.text = item
+            getDataWithSearchKeyword()
+            tblPhotos.tableHeaderView = collectionVwFilter
+            collectionVwFilter.snp.makeConstraints { (make) -> Void in
+                make.width.equalToSuperview()
+                make.height.equalTo(50)
+                make.centerXWithinMargins.equalToSuperview()
+            }
+            keywordsDictLevel2 = keywordsDict.value(forKey: "\(item)") as? NSDictionary
+            items.removeAll()
+            for subType in keywordsDictLevel2 {
+                items.append(subType.key as! String)
+            }
+            // reload the buttons
+            collectionVwFilter.reloadData()
+        }
+    }
+    func setUpCollectionViewForKeywords() {
+        // setting up the collection view
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        collectionVwFilter = UICollectionView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 50), collectionViewLayout: layout)
+        collectionVwFilter.backgroundColor = UIColor.white
+        collectionVwFilter.showsHorizontalScrollIndicator = false
+        collectionVwFilter.register(FiltersCCell.self, forCellWithReuseIdentifier: "FiltersCCell")
+        collectionVwFilter.dataSource = self
+        collectionVwFilter.delegate = self
+    }
+    //Fetching the data from the local file json
+    func readData(fileName: String) -> NSDictionary? {
+        if let path = Bundle.main.path(forResource: fileName, ofType: "json") {
+            do {
+                let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
+                let jsonResult = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
+                if let jsonResult = jsonResult as? Dictionary<String, AnyObject> {
+                    return jsonResult as NSDictionary
+                }
+            }
+            catch {
+                print ("File cannot be read...")
+            }
+        }
+        return nil
+    }
+    func getDataWithSearchKeyword() {
+        photosVM.getSearchPhotos(searchText: txtSearch.text!) { [self] (status) in
+            if status == "success" {
+                lblDescription.text = txtSearch.text
+                tblPhotos.reloadData()
+            }
+            else {
+                //showing error message
+                showAlert(message: status)
+            }
+            //remove the spinner from the view and show the tableview
+            removeSpinnerFromView()
+        }
     }
 }
 
@@ -176,15 +280,12 @@ extension PhotosVC: UITableViewDelegate {
         view.endEditing(true)
         // access the tableview cell that has been tapped
         guard let cell = tableView.cellForRow(at: indexPath) as? PhotosTCell else { return }
-        
         // image url required for HD image
         let picURL = "\(Constants.imgURL)\(photosVM.albumData.photos?.photo![indexPath.row].server ?? "")/\(String(describing: photosVM.albumData.photos?.photo![indexPath.row].id ?? ""))_\(photosVM.albumData.photos?.photo![indexPath.row].secret ?? "").jpg"
-       
         // using GSImageInfo library to present a full screen image view
         let imageInfo = GSImageInfo(image: cell.imgAlbum.image!, imageMode: .aspectFit, imageHD: URL(string: picURL))
         let transitionInfo = GSTransitionInfo(fromView: cell.imgAlbum)
         let imgViewer = GSImageViewerController(imageInfo: imageInfo, transitionInfo: transitionInfo)
-        
         //only apply the blur if the user hasn't disabled transparency effects
         if !UIAccessibility.isReduceTransparencyEnabled {
             imgViewer.backgroundColor = .clear
@@ -254,6 +355,8 @@ extension PhotosVC: UISearchBarDelegate {
         isSearch = searchText == "" ? false : true
         if !isSearch{
             //Showing recent photos when search is not active
+            tblPhotos.tableHeaderView = nil
+            btnDropDown.setTitle("Categories", for: .normal)
             addSpinnerToView()
             loadPhotos()
         }
@@ -267,21 +370,59 @@ extension PhotosVC: UISearchBarDelegate {
         addSpinnerToView()
         isSearch = true
         view.endEditing(true)
-        photosVM.getSearchPhotos(searchText: txtSearch.text!) { [self] (status) in
-            if status == "success" {
-                lblDescription.text = txtSearch.text
-                tblPhotos.reloadData()
-            }
-            else {
-                //showing error message
-                showAlert(message: status)
-            }
-            //remove the spinner from the view and show the tableview
-            removeSpinnerFromView()
-        }
+        getDataWithSearchKeyword()
     }
-    //keyboard dismiss when cancel button has been tapped
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.perform(#selector(self.resignFirstResponder), with: nil, afterDelay: 0.1)
+}
+
+//MARK:- UICollectionView DataSource
+extension PhotosVC: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return items.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FiltersCCell", for: indexPath) as! FiltersCCell
+        let title = items[indexPath.row]
+        cell.lblFilter.text = title
+        cell.lblFilter.sizeToFit()
+        if txtSearch.text == cell.lblFilter.text {
+            cell.vwBackground.backgroundColor = UIColor.FlickrAlbum_theme
+            cell.lblFilter.textColor = UIColor.white
+        }
+        else {
+            cell.vwBackground.backgroundColor = UIColor.white
+            cell.lblFilter.textColor = UIColor.black
+        }
+        return cell
+    }
+}
+
+//MARK:- UICollectionView Delegate and Flowlayout
+extension PhotosVC: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        addSpinnerToView()
+        let title = items[indexPath.row]
+        txtSearch.text = title
+        getDataWithSearchKeyword()
+        if let subSubTypes = keywordsDictLevel2.value(forKey: title) {
+            items.removeAll()
+            items = subSubTypes as! [String]
+        }
+        collectionVwFilter.reloadData()
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+       
+        let width = collectionView.frame.size.width/2.5
+        let height = CGFloat(50.0)
+        return CGSize(width: width, height: height)
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets.init(top: 5, left: 5, bottom: 5, right: 5)
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 5
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 5
     }
 }

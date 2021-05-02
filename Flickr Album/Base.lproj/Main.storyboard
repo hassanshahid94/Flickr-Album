@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="r7N-bb-CEf">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="r7N-bb-CEf">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -22,57 +22,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Bp1-gi-rIP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2152" y="78"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="N8H-tm-LLk">
-            <objects>
-                <viewController id="zXq-a2-PH7" customClass="ViewController" customModule="Flickr_Album" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="9JT-qY-GQx">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <searchBar contentMode="redraw" searchBarStyle="minimal" translatesAutoresizingMaskIntoConstraints="NO" id="FIQ-5i-Lj4">
-                                <rect key="frame" x="10.5" y="54" width="393" height="40"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="4uX-n0-1c4"/>
-                                </constraints>
-                                <textInputTraits key="textInputTraits"/>
-                            </searchBar>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hXX-wd-J2P">
-                                <rect key="frame" x="0.0" y="104" width="414" height="758"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TableCell" rowHeight="60" id="IdE-Fq-qEj">
-                                        <rect key="frame" x="0.0" y="28" width="414" height="60"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="IdE-Fq-qEj" id="QbQ-AJ-eY7">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="60"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </prototypes>
-                            </tableView>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="566-b7-VLR"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="hXX-wd-J2P" firstAttribute="centerX" secondItem="566-b7-VLR" secondAttribute="centerX" id="4l3-ms-6rN"/>
-                            <constraint firstItem="hXX-wd-J2P" firstAttribute="bottom" secondItem="566-b7-VLR" secondAttribute="bottom" id="8mb-dk-OzY"/>
-                            <constraint firstItem="hXX-wd-J2P" firstAttribute="top" secondItem="FIQ-5i-Lj4" secondAttribute="bottom" constant="10" id="Ejb-0T-O4N"/>
-                            <constraint firstItem="hXX-wd-J2P" firstAttribute="width" secondItem="9JT-qY-GQx" secondAttribute="width" id="aFV-JI-p82"/>
-                            <constraint firstItem="FIQ-5i-Lj4" firstAttribute="width" secondItem="9JT-qY-GQx" secondAttribute="width" multiplier="0.95" id="eUy-cq-QYm"/>
-                            <constraint firstItem="FIQ-5i-Lj4" firstAttribute="top" secondItem="566-b7-VLR" secondAttribute="top" constant="10" id="g1f-6v-sqx"/>
-                            <constraint firstItem="FIQ-5i-Lj4" firstAttribute="centerX" secondItem="566-b7-VLR" secondAttribute="centerX" id="kcf-uq-kFo"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="tableView" destination="hXX-wd-J2P" id="pH7-8z-Qvg"/>
-                        <outlet property="txtSeachBar" destination="FIQ-5i-Lj4" id="eJx-Ft-GuW"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="heT-DN-tW6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="483" y="78"/>
         </scene>
     </scenes>
     <resources>

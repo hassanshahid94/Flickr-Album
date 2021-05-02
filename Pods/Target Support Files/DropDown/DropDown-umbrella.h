@@ -10,9 +10,7 @@
 #endif
 #endif
 
-#import "XLMediaZoom.h"
-#import "XLVideoZoom.h"
 
-FOUNDATION_EXPORT double XLMediaZoomVersionNumber;
-FOUNDATION_EXPORT const unsigned char XLMediaZoomVersionString[];
+FOUNDATION_EXPORT double DropDownVersionNumber;
+FOUNDATION_EXPORT const unsigned char DropDownVersionString[];
 

@@ -37,7 +37,7 @@ class PhotosVM : NSObject  {
         }
     }
     
-    //MARK:- Functions        
+    //MARK:- Functions
     func getPhotos(pageNumber: Int = 1, completion: @escaping (String) -> Void) {
         let params = GetPhotosBody()
         params.format = "json"
@@ -85,4 +85,3 @@ class PhotosVM : NSObject  {
         }
     }
 }
-

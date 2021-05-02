@@ -4,6 +4,7 @@ PODS:
     - Alamofire (~> 4.7)
     - ObjectMapper (~> 3.4)
   - DataCache (1.5)
+  - DropDown (2.3.13)
   - GSImageViewerController (1.6.3)
   - ObjectMapper (3.5.3)
   - SDWebImage (5.11.0):
@@ -11,42 +12,41 @@ PODS:
   - SDWebImage/Core (5.11.0)
   - SnapKit (5.0.1)
   - SwiftyJSON (4.3.0)
-  - XLMediaZoom (2.0.1)
 
 DEPENDENCIES:
   - Alamofire (~> 4.7.3)
   - AlamofireObjectMapper (~> 5.2)
   - DataCache
+  - DropDown
   - GSImageViewerController
   - ObjectMapper (~> 3.5)
   - SDWebImage (~> 5.0)
   - SnapKit (~> 5.0.0)
   - SwiftyJSON (~> 4.0)
-  - XLMediaZoom
 
 SPEC REPOS:
   trunk:
     - Alamofire
     - AlamofireObjectMapper
     - DataCache
+    - DropDown
     - GSImageViewerController
     - ObjectMapper
     - SDWebImage
     - SnapKit
     - SwiftyJSON
-    - XLMediaZoom
 
 SPEC CHECKSUMS:
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
   AlamofireObjectMapper: 1989f690e982b71921b9253f53a4f33a9bc00d88
   DataCache: 8099e01aa35c2fd30f3410aae14ef5a130f6524b
+  DropDown: 8a2116376c1981888557f72ec2ffc9a5e0e456ec
   GSImageViewerController: 20a257d7e3dd9ee171c2dfea659992eba2761839
   ObjectMapper: 97111c97e054a6ee25917662106689f0b4127b37
   SDWebImage: 7acbb57630ac7db4a495547fb73916ff3e432f6b
   SnapKit: 97b92857e3df3a0c71833cce143274bf6ef8e5eb
   SwiftyJSON: 6faa0040f8b59dead0ee07436cbf76b73c08fd08
-  XLMediaZoom: 52f8f473066d0a3e09572fbee6c84f25c1ed0bca
 
-PODFILE CHECKSUM: aee67244a4542ba7e0ce6d8682046e9cad993138
+PODFILE CHECKSUM: cbc5775d2747126ea4ed71fcc00b53ea953d6947
 
 COCOAPODS: 1.10.1

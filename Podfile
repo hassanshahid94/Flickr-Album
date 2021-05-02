@@ -13,8 +13,8 @@ pod 'ObjectMapper', '~> 3.5'
 pod 'SwiftyJSON', '~> 4.0'
 pod 'DataCache'
 pod 'SnapKit', '~> 5.0.0'
-pod 'XLMediaZoom'
 pod 'GSImageViewerController'
+pod 'DropDown'
   target 'Flickr AlbumTests' do
     inherit! :search_paths
     # Pods for testing
