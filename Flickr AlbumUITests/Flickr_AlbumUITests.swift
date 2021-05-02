@@ -13,9 +13,14 @@ class Flickr_AlbumUITests: XCTestCase {
     var app: XCUIApplication!
     
     //MARK:- UI TestCases
-    func testLabel() {
+    func testLabelHeading() {
         app = XCUIApplication()
         app.launch()
         XCTAssert(app.staticTexts["Flickr Album"].exists)
+    }
+    func testLabelDescription() {
+        app = XCUIApplication()
+        app.launch()
+        XCTAssert(app.staticTexts["Recent Photos"].exists)
     }
 }

@@ -29,7 +29,7 @@ class PhotosVM : NSObject  {
     //MARK:- Constructor
     override init() {
         super.init()
-        keywordsDict = readData(fileName: "flickr-keyword-struct")!
+        keywordsDict = readJsonFile(fileName: "flickr-keyword-struct")!
         getPhotos { [self] (status) in
             if status != "success" {
                 //Loading cache data if internet isn't available.
@@ -91,7 +91,7 @@ class PhotosVM : NSObject  {
         }
     }
     //Fetching the data from the local file json
-    func readData(fileName: String) -> NSDictionary? {
+    func readJsonFile(fileName: String) -> NSDictionary? {
         if let path = Bundle.main.path(forResource: fileName, ofType: "json") {
             do {
                 let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)

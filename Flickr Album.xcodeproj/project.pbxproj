@@ -129,16 +129,6 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		5C030277263E589B0011983E /* GlobalFiles */ = {
-			isa = PBXGroup;
-			children = (
-				5CACE14226331BA3002B4E75 /* ServerManager.swift */,
-				5CACE14726331BEC002B4E75 /* Constants.swift */,
-				5C2EBEB526334F4700A27069 /* Extensions.swift */,
-			);
-			path = GlobalFiles;
-			sourceTree = "<group>";
-		};
 		5C030278263E58D30011983E /* LocalJSONFile */ = {
 			isa = PBXGroup;
 			children = (
@@ -153,6 +143,16 @@
 				5C1D8E54263A19B5000DC9A5 /* FiltersCCell.swift */,
 			);
 			path = CollectionViewCells;
+			sourceTree = "<group>";
+		};
+		5C6F64C4263F321B00AC2652 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				5CACE14226331BA3002B4E75 /* ServerManager.swift */,
+				5CACE14726331BEC002B4E75 /* Constants.swift */,
+				5C2EBEB526334F4700A27069 /* Extensions.swift */,
+			);
+			path = Helper;
 			sourceTree = "<group>";
 		};
 		5CACE0E82633171B002B4E75 = {
@@ -185,7 +185,7 @@
 				5CF62B4326345D1F0008E19C /* TableViewCells */,
 				5CACE15326331E12002B4E75 /* ViewModels */,
 				5CACE15526331E4D002B4E75 /* ViewControllers */,
-				5C030277263E589B0011983E /* GlobalFiles */,
+				5C6F64C4263F321B00AC2652 /* Helper */,
 				5CACE0F42633171B002B4E75 /* AppDelegate.swift */,
 				5CACE0F62633171B002B4E75 /* SceneDelegate.swift */,
 				5CACE0FA2633171B002B4E75 /* Main.storyboard */,

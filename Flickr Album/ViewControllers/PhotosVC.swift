@@ -17,7 +17,7 @@ class PhotosVC: UIViewController {
     var isSearch = false
     var photosVM = PhotosVM()
     var refreshControl = UIRefreshControl()
-    let dropDownKeyWords = DropDown()
+    let dropDownKeywords = DropDown()
     var keywordsDictLevel2: NSDictionary! // Second Heirarchy -> Dict for predefine keywords
     var items = [String]() // Second/Third Heirarchy -> Array using in CollectionView for predefine keywords
     
@@ -58,7 +58,7 @@ class PhotosVC: UIViewController {
         }
         // Adding a DropDown Button Heading Programtically
         btnDropDown = UIButton()
-        btnDropDown.setTitle("Categories", for: .normal)
+        btnDropDown.setTitle("Keywords", for: .normal)
         btnDropDown.titleLabel?.font = UIFont.FlickAlbum_description
         btnDropDown.layer.borderColor = UIColor.FlickrAlbum_theme.cgColor
         btnDropDown.layer.borderWidth = 1
@@ -138,13 +138,27 @@ class PhotosVC: UIViewController {
             if status == "success" {
                 lblDescription.text = "Recent Photos"
                 tblPhotos.tableHeaderView = nil
-                btnDropDown.setTitle("Categories", for: .normal)
+                btnDropDown.setTitle("Keywords", for: .normal)
                 tblPhotos.reloadData()
             }
             else {
                 //showing error message
                 showAlert(message: status)
             }
+            removeSpinnerFromView()
+        }
+    }
+    func getDataWithSearchKeyword() {
+        photosVM.getSearchPhotos(searchText: txtSearch.text!) { [self] (status) in
+            if status == "success" {
+                lblDescription.text = txtSearch.text
+                tblPhotos.reloadData()
+            }
+            else {
+                //showing error message
+                showAlert(message: status)
+            }
+            //remove the spinner from the view and show the tableview
             removeSpinnerFromView()
         }
     }
@@ -168,12 +182,12 @@ class PhotosVC: UIViewController {
     }
     //Setting up the dropdown values
     func setupDropDown(itemsCV: [String]) {
-        dropDownKeyWords.anchorView = btnDropDown // UIView or UIBarButtonItem
+        dropDownKeywords.anchorView = btnDropDown // UIView or UIBarButtonItem
         // Will set a custom width instead of the anchor view width
-        dropDownKeyWords.width = 200
-        dropDownKeyWords.dataSource = itemsCV
+        dropDownKeywords.width = 200
+        dropDownKeywords.dataSource = itemsCV
         //DropDown trigger
-        dropDownKeyWords.selectionAction = { [unowned self] (index, item) in
+        dropDownKeywords.selectionAction = { [unowned self] (index, item) in
             addSpinnerToView()
             btnDropDown.setTitle(item, for: .normal)
             txtSearch.text = item
@@ -204,26 +218,12 @@ class PhotosVC: UIViewController {
         collectionVwFilter.dataSource = self
         collectionVwFilter.delegate = self
     }
-    func getDataWithSearchKeyword() {
-        photosVM.getSearchPhotos(searchText: txtSearch.text!) { [self] (status) in
-            if status == "success" {
-                lblDescription.text = txtSearch.text
-                tblPhotos.reloadData()
-            }
-            else {
-                //showing error message
-                showAlert(message: status)
-            }
-            //remove the spinner from the view and show the tableview
-            removeSpinnerFromView()
-        }
-    }
-    //Showing drop down when clicked
+    
     //MARK:- Actions
     @objc func btnDropDownAction(sender : UIButton) {
         // disaply the drop down that contains level 1 keywords
         view.endEditing(true)
-        dropDownKeyWords.show()
+        dropDownKeywords.show()
     }
     //pull to refresh fucntion for TableView
     @objc func refresh(_ sender: Any) {
@@ -274,13 +274,12 @@ extension PhotosVC: UITableViewDelegate {
             //always fill the view
             blurEffectView.frame = self.view.bounds
             blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-
             imgViewer.view.addSubview(blurEffectView) //if you have more UIViews, use an insertSubview API to place it where needed
             imgViewer.view.sendSubviewToBack(blurEffectView)
-        } else {
+        }
+        else {
             imgViewer.backgroundColor = .black
         }
-        
         present(imgViewer, animated: true, completion: nil)
     }
     //Using this delegate for pagination

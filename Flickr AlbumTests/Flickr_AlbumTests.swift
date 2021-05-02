@@ -15,7 +15,7 @@ class Flickr_AlbumTests: XCTestCase {
     
     //MARK:- Unit Testing
     func testGetPhotos() {
-        let data = readData(fileName: "PhotosResponse")
+        let data = readJsonFile(fileName: "PhotosResponse")
         var expected: FlickrAlbumPhotosResponse!
         expected = Mapper<FlickrAlbumPhotosResponse>().map(JSONObject: data)
         let expectatio = expectation(description: "GET \(Constants.baseURL)\(FlickrAlbumEndpoints.getPhotos.rawValue)")
@@ -33,7 +33,7 @@ class Flickr_AlbumTests: XCTestCase {
         }
     }
     //Reading Json File response
-    func readData(fileName: String) -> AnyObject? {
+    func readJsonFile(fileName: String) -> AnyObject? {
         if let path = Bundle.main.path(forResource: fileName, ofType: "json") {
             do {
                 let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
