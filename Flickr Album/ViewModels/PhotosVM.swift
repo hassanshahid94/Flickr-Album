@@ -20,10 +20,16 @@ class PhotosVM : NSObject  {
             self.bindPhotosVMToController()
         }
     }
+    var keywordsDict: NSDictionary! { // First Heirarchy -> Dict for predefine keywords
+        didSet {
+            self.bindPhotosVMToController()
+        }
+    }
     
     //MARK:- Constructor
     override init() {
         super.init()
+        keywordsDict = readData(fileName: "flickr-keyword-struct")!
         getPhotos { [self] (status) in
             if status != "success" {
                 //Loading cache data if internet isn't available.
@@ -83,5 +89,21 @@ class PhotosVM : NSObject  {
             }
             completion(status)
         }
+    }
+    //Fetching the data from the local file json
+    func readData(fileName: String) -> NSDictionary? {
+        if let path = Bundle.main.path(forResource: fileName, ofType: "json") {
+            do {
+                let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
+                let jsonResult = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
+                if let jsonResult = jsonResult as? Dictionary<String, AnyObject> {
+                    return jsonResult as NSDictionary
+                }
+            }
+            catch {
+                print ("File cannot be read...")
+            }
+        }
+        return nil
     }
 }

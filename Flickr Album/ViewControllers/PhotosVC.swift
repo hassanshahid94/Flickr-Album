@@ -18,7 +18,6 @@ class PhotosVC: UIViewController {
     var photosVM = PhotosVM()
     var refreshControl = UIRefreshControl()
     let dropDownKeyWords = DropDown()
-    var keywordsDict: NSDictionary! // First Heirarchy -> Dict for predefine keywords
     var keywordsDictLevel2: NSDictionary! // Second Heirarchy -> Dict for predefine keywords
     var items = [String]() // Second/Third Heirarchy -> Array using in CollectionView for predefine keywords
     
@@ -34,7 +33,6 @@ class PhotosVC: UIViewController {
     //MARK:- Load
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadPredefineKeywords()
         //Creating UI Programmatically
         configureUI()
         //Binding API data response to UI
@@ -45,13 +43,6 @@ class PhotosVC: UIViewController {
     }
     
     //MARK:- Functions
-    func loadPredefineKeywords() {
-        // reading json keywords from json file
-        keywordsDict = readData(fileName: "flickr-keyword-struct")!
-        // loading level 1 keywords in dropdown
-        setupDropDown(itemsCV: keywordsDict.allKeys as! [String])
-        setUpCollectionViewForKeywords()
-    }
     func configureUI() {
         // Adding a Label Heading Programtically
         lblHeading = UILabel()
@@ -138,12 +129,16 @@ class PhotosVC: UIViewController {
             }
             removeSpinnerFromView()
             tblPhotos.reloadData()
+            setupDropDown(itemsCV: photosVM.keywordsDict.allKeys as! [String])
         }
+        setUpCollectionViewForKeywords()
     }
     func loadPhotos() {
         photosVM.getPhotos { [self] (status) in
             if status == "success" {
                 lblDescription.text = "Recent Photos"
+                tblPhotos.tableHeaderView = nil
+                btnDropDown.setTitle("Categories", for: .normal)
                 tblPhotos.reloadData()
             }
             else {
@@ -152,12 +147,6 @@ class PhotosVC: UIViewController {
             }
             removeSpinnerFromView()
         }
-    }
-    //pull to refresh fucntion for TableView
-    @objc func refresh(_ sender: Any) {
-        txtSearch.text = ""
-        view.endEditing(true)
-        loadPhotos()
     }
     func addSpinnerToView() {
         tblPhotos.isHidden = true
@@ -177,19 +166,13 @@ class PhotosVC: UIViewController {
         tblPhotos.isHidden = false
         spinner.stopAnimating()
     }
-    //Showing drop when clicked
-    @objc func btnDropDownAction(sender : UIButton) {
-        // disaply the drop down that contains level 1 keywords
-        view.endEditing(true)
-        dropDownKeyWords.show()
-    }
     //Setting up the dropdown values
     func setupDropDown(itemsCV: [String]) {
         dropDownKeyWords.anchorView = btnDropDown // UIView or UIBarButtonItem
         // Will set a custom width instead of the anchor view width
         dropDownKeyWords.width = 200
-        //dropDownKeyWords.direction = .top
         dropDownKeyWords.dataSource = itemsCV
+        //DropDown trigger
         dropDownKeyWords.selectionAction = { [unowned self] (index, item) in
             addSpinnerToView()
             btnDropDown.setTitle(item, for: .normal)
@@ -201,7 +184,7 @@ class PhotosVC: UIViewController {
                 make.height.equalTo(50)
                 make.centerXWithinMargins.equalToSuperview()
             }
-            keywordsDictLevel2 = keywordsDict.value(forKey: "\(item)") as? NSDictionary
+            keywordsDictLevel2 = photosVM.keywordsDict.value(forKey: "\(item)") as? NSDictionary
             items.removeAll()
             for subType in keywordsDictLevel2 {
                 items.append(subType.key as! String)
@@ -221,22 +204,6 @@ class PhotosVC: UIViewController {
         collectionVwFilter.dataSource = self
         collectionVwFilter.delegate = self
     }
-    //Fetching the data from the local file json
-    func readData(fileName: String) -> NSDictionary? {
-        if let path = Bundle.main.path(forResource: fileName, ofType: "json") {
-            do {
-                let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
-                let jsonResult = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
-                if let jsonResult = jsonResult as? Dictionary<String, AnyObject> {
-                    return jsonResult as NSDictionary
-                }
-            }
-            catch {
-                print ("File cannot be read...")
-            }
-        }
-        return nil
-    }
     func getDataWithSearchKeyword() {
         photosVM.getSearchPhotos(searchText: txtSearch.text!) { [self] (status) in
             if status == "success" {
@@ -250,6 +217,19 @@ class PhotosVC: UIViewController {
             //remove the spinner from the view and show the tableview
             removeSpinnerFromView()
         }
+    }
+    //Showing drop down when clicked
+    //MARK:- Actions
+    @objc func btnDropDownAction(sender : UIButton) {
+        // disaply the drop down that contains level 1 keywords
+        view.endEditing(true)
+        dropDownKeyWords.show()
+    }
+    //pull to refresh fucntion for TableView
+    @objc func refresh(_ sender: Any) {
+        txtSearch.text = ""
+        view.endEditing(true)
+        loadPhotos()
     }
 }
 
@@ -355,8 +335,6 @@ extension PhotosVC: UISearchBarDelegate {
         isSearch = searchText == "" ? false : true
         if !isSearch{
             //Showing recent photos when search is not active
-            tblPhotos.tableHeaderView = nil
-            btnDropDown.setTitle("Categories", for: .normal)
             addSpinnerToView()
             loadPhotos()
         }
